@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="./style.css" />
+		<title>online tic-tac-toe</title>
+	</head>
+	<body>
+		<header>
+			<h1>online tic-tac-toe</h1>
+			<h2>room id: <span id="room-id">xxxxxx</span></h2>
+			<h2>player 1: <span id="player-1"></span></h2>
+			<h2>player 2: <span id="player-2"></span></h2>
+			<hr />
+		</header>
+		<main>
+			<div class="container">
+				<h2 id="turn">Turn: HEXXT (X)</h2>
+				<table>
+					<tr>
+						<td class="empty" id="board[0]"></td>
+						<td class="empty" id="board[1]"></td>
+						<td class="empty" id="board[2]"></td>
+					</tr>
+					<tr>
+						<td class="empty" id="3">x</td>
+						<td class="empty" id="board[4]"></td>
+						<td class="empty" id="board[5]"></td>
+					</tr>
+					<tr>
+						<td class="empty" id="board[6]"></td>
+						<td class="empty" id="board[7]"></td>
+						<td class="empty" id="board[8]"></td>
+					</tr>
+				</table>
+			</div>
+		</main>
+	</body>
+	<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+	<script>
+		const playerName = sessionStorage.getItem('playerName');
+		const roomId = sessionStorage.getItem('roomId');
+
+		console.log({playerName, roomId});
+
+		const socket = io('http://localhost:3000');
+		socket.on('throw', (error) => {
+			alert(error);
+			window.location.href = '/';
+		});
+
+		socket.emit('join', { roomId, playerName });
+		socket.on('update', (game) => {
+			console.log(game);
+			document.getElementById('room-id').innerText = game.roomId;
+			document.getElementById('player-1').innerText = game.players[0] ?? 'waiting...';
+			document.getElementById('player-2').innerText = game.players[1] ?? 'waiting...';
+		});
+	</script>
+</html>
