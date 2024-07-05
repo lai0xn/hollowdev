@@ -34,7 +34,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
                 .cors(AbstractHttpConfigurer::disable) // Disable CORS
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/api/v1/user/**").permitAll() // Permit all requests to /api/v1/user/
+                        req -> req
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/webjars/**").permitAll() // Permit all requests to the swagger-ui
+                                .requestMatchers("/api/v1/user/**").permitAll() // Permit all requests to /api/v1/user/
                                 .requestMatchers("/api/v1/candidate/add").hasAuthority("ADMIN") // Permit requests to /api/v1/candidate/add only if the user has the ADMIN authority
                                 .requestMatchers("/api/v1/election/add").hasAuthority("ADMIN") // Permit requests to /api/v1/election/add only if the user has the ADMIN authority
                                 .requestMatchers("/api/v1/votes/add").hasAuthority("USER") // Permit requests to /api/v1/votes/add only if the user has the USER authority
