@@ -6,6 +6,7 @@ body {
 	grid-template-rows: auto 1fr;
 	font-family: Arial, sans-serif;
 	font-size: 18px;
+	padding: 10px;
 }
 header {
 	width: 100%;
@@ -29,8 +30,12 @@ main {
 }
 .container {
 	border: solid #007bff 1px;
+	background-color: #f7f7f7;
 	padding: 20px;
-	border-radius: 15px;
+	border-radius: 20px;
+	width: 400px;
+	max-width: calc(100vw - 20px);
+	box-sizing: border-box;
 }
 h2 {
 	margin: 0 0 10px 0;
@@ -43,8 +48,8 @@ table {
 	font-size: 30px;
 }
 td {
-	width: 70px;
-	height: 70px;
+	width: 90px;
+	height: 90px;
 	border: solid black 1px;
 	text-align: center;
 }
@@ -52,13 +57,13 @@ td:empty {
 	cursor: pointer;
 }
 td:empty:hover {
-	background-color: #f0f0f0;
+	background-color: #fbfbfb;
 }
-#myTurn{
+#myTurn {
 	padding: 20px;
 	color: #007bff;
 }
-#opponentTurn{
+#opponentTurn {
 	padding: 20px;
 	color: #e24e7b;
 }

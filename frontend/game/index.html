@@ -50,21 +50,26 @@
 		const socket = io('http://localhost:3000');
 		socket.on('throw', (error) => {
 			alert(error);
-			window.location.href = '/';
+			location.reload()
 		});
 		console.log(socket);
 
 		socket.emit('join', { roomId, playerName });
 		socket.on('update', (game) => {
 			console.log(game);
-			myTurn = game.players[game.currentPlayer] === playerName;
-			if (myTurn) {
-				document.getElementById('myTurn').style.display = 'block';
-				document.getElementById('opponentTurn').style.display = 'none';
-			} else if (game.players[0] && game.players[1]){
-				document.getElementById('myTurn').style.display = 'none';
-				document.getElementById('opponentTurn').style.display = 'block';
-			}
+			myTurn =
+				game.players[game.currentPlayer] === playerName &&
+				game.players.length >= 2;
+			if (game.players[0] && game.players[1])
+				if (myTurn) {
+					document.getElementById('myTurn').style.display = 'block';
+					document.getElementById('opponentTurn').style.display =
+						'none';
+				} else {
+					document.getElementById('myTurn').style.display = 'none';
+					document.getElementById('opponentTurn').style.display =
+						'block';
+				}
 
 			document.getElementById('room-id').innerText = game.roomId;
 
