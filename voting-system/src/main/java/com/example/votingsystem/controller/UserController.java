@@ -1,6 +1,7 @@
 package com.example.votingsystem.controller;
 
 
+import com.example.votingsystem.dto.LoginRequest;
 import com.example.votingsystem.dto.RegisterRequest;
 import com.example.votingsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,12 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> userRegister(@RequestBody RegisterRequest registerRequest) {
         return userService.register(registerRequest);
+    }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) {
+        return userService.login(loginRequest);
     }
 
     /*
