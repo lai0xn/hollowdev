@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
+	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -41,6 +43,11 @@ func main() {
 	routes.Execute(e)
 	db.Connect()
 	db.Setup()
+	data, err := json.MarshalIndent(e.Routes(), "", "  ")
+	if err != nil {
+		panic(err)
+	}
+	os.WriteFile("routes.json", data, 0644)
 	go graph.Execute()
 	e.Start(":8080")
 }

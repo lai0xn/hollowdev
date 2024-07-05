@@ -9,8 +9,8 @@ import (
 )
 
 func ParseToken(tokenString string) (*jwt.Token, error) {
-  claims := new(handlers.CustomClaims)
-	token, err := jwt.ParseWithClaims(tokenString,claims,func(token *jwt.Token) (interface{}, error) {
+	claims := new(handlers.CustomClaims)
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 
 		return []byte(config.JwtSecret()), nil
 	})

@@ -18,18 +18,17 @@ func ComputeHMAC(data []byte) string {
 	return hex.EncodeToString(h.Sum(nil))
 }
 
-func WebHook(c echo.Context)error{
-   payload, err := io.ReadAll(c.Request().Body)
-   signature := c.Request().Header.Get("signature")
+func WebHook(c echo.Context) error {
+	payload, err := io.ReadAll(c.Request().Body)
+	signature := c.Request().Header.Get("signature")
 	if err != nil {
-		    return echo.NewHTTPError(http.StatusBadRequest,err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 
 	}
 
 	// If there is no signature, ignore the request
 	if signature == "" {
-			return echo.NewHTTPError(http.StatusBadRequest,err.Error())
-
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 
 	}
 
@@ -37,19 +36,19 @@ func WebHook(c echo.Context)error{
 	computedSignature := ComputeHMAC(payload)
 	// If the calculated signature doesn't match the received signature, ignore the request
 	if !hmac.Equal([]byte(computedSignature), []byte(signature)) {
-			return echo.NewHTTPError(http.StatusBadRequest,err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 
 	}
- 
-  uid := c.Param("uid")
-  cid := c.Param("cid")
-  usrv := services.UserService{}
-  err = usrv.Enroll(uid,cid)
 
-  if err != nil {
-    return echo.NewHTTPError(http.StatusBadRequest,err.Error())
-  }
+	uid := c.Param("uid")
+	cid := c.Param("cid")
+	usrv := services.UserService{}
+	err = usrv.Enroll(uid, cid)
 
-  return c.String(http.StatusOK,"enrolled with success")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	return c.String(http.StatusOK, "enrolled with success")
 
 }

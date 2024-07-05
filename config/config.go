@@ -19,5 +19,5 @@ func MongoURI() string {
 }
 
 func JwtSecret() string {
-	return os.Getenv("JwtSecret")
+	return os.Getenv("JWT_SECRET")
 }

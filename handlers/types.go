@@ -5,8 +5,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-
-
 type H map[string]interface{}
 
 type CustomClaims struct {
@@ -19,23 +17,19 @@ type CustomClaims struct {
 }
 
 type PartPayload struct {
-  Title       string             `json:"title" form:"title"`
-	Description string             `json:"description" form:"description"`
-	Video  string                  `json:"video" form:"video"`
-	Number     int            `json:"part_number" form:"number"`
-
-
+	Title       string `json:"title" form:"title"`
+	Description string `json:"description" form:"description"`
+	Video       string `json:"video" form:"video"`
+	Number      int    `json:"part_number" form:"number"`
 }
 type CoursePayload struct {
-  Title       string             `json:"title" form:"title"`
+	Title       string             `json:"title" form:"title"`
 	Description string             `json:"description" form:"description"`
 	TrailerVid  string             `json:"trailer" form:"trailer"`
 	Reviews     float32            `json:"reviews" form:"reviews"`
 	User        primitive.ObjectID `json:"user_id" form:"user_id"`
-  Price       int                `json:"price" form:"price"`
-
+	Price       int                `json:"price" form:"price"`
 }
-
 
 type Response struct {
 	Message string `json:"message"`

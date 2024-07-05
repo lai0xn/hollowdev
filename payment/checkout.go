@@ -16,7 +16,7 @@ func CreateCheckout(amount int, currency string, webhook_link string) []byte {
 	requestBody := map[string]interface{}{
 		"amount":           amount,
 		"currency":         currency,
-    "success_url":      "http://localhost:8080",
+		"success_url":      "http://localhost:8080",
 		"webhook_endpoint": webhook_link,
 	}
 	fmt.Println(webhook_link)

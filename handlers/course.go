@@ -24,28 +24,28 @@ func (co *CourseController) CreateCourse(c echo.Context) error {
 	}
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(*CustomClaims)
-  file,err  := c.FormFile("trailer")
-  if err != nil {
-    return echo.NewHTTPError(http.StatusBadRequest,err.Error())
-  }
-  f,err := os.Create("uploads/trailers/"+file.Filename)
-  if err != nil {
-    return echo.NewHTTPError(http.StatusBadRequest,err.Error())
-  }
-  src,err := file.Open()
-  if err != nil {
-    return echo.NewHTTPError(http.StatusBadRequest,err.Error())
-  }
-  io.Copy(f,src)
+	file, err := c.FormFile("trailer")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	f, err := os.Create("uploads/trailers/" + file.Filename)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	src, err := file.Open()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	io.Copy(f, src)
 	err = co.srv.CreateCourse(models.Course{
-		ID:          primitive.NewObjectID(),
-		Title:       payload.Title,
-		Description: payload.Description,
-		Price:       payload.Price,
-		User:        claims.ID,
-    Parts: []models.Part{},
-    Enrollements: []models.Enrollment{},
-    TrailerVid: c.Request().Host + "/uploads/trailers/"+filepath.Clean(file.Filename),
+		ID:           primitive.NewObjectID(),
+		Title:        payload.Title,
+		Description:  payload.Description,
+		Price:        payload.Price,
+		User:         claims.ID,
+		Parts:        []models.Part{},
+		Enrollements: []models.Enrollment{},
+		TrailerVid:   c.Request().Host + "/uploads/trailers/" + filepath.Clean(file.Filename),
 	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
@@ -57,41 +57,38 @@ func (co *CourseController) CreateCourse(c echo.Context) error {
 	})
 }
 
-
-
 func (co *CourseController) CreatePart(c echo.Context) error {
 	payload := new(PartPayload)
 	if err := c.Bind(payload); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-  id := c.Param("id")
-  _id,err := primitive.ObjectIDFromHex(id)
-  	if err := c.Bind(payload); err != nil {
+	id := c.Param("id")
+	_id, err := primitive.ObjectIDFromHex(id)
+	if err := c.Bind(payload); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-  file,err  := c.FormFile("video")
-  if err != nil {
-    return echo.NewHTTPError(http.StatusBadRequest,err.Error())
-  }
- 
-  
-  f,err := os.Create("uploads/courses/"+filepath.Clean(file.Filename))
-  if err != nil {
-    return echo.NewHTTPError(http.StatusBadRequest,err.Error())
-  }
-  src,err := file.Open()
-  if err != nil {
-    return echo.NewHTTPError(http.StatusBadRequest,err.Error())
-  }
-  io.Copy(f,src)
+	file, err := c.FormFile("video")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	f, err := os.Create("uploads/courses/" + filepath.Clean(file.Filename))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	src, err := file.Open()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	io.Copy(f, src)
 	err = co.srv.CreatePart(models.Part{
 		ID:          primitive.NewObjectID(),
 		Title:       payload.Title,
 		Description: payload.Description,
-		Number:       payload.Number,
-		CourseID:     _id   ,
-    VideoPath: c.Request().URL.Host + "uploads/courses/" +filepath.Clean(file.Filename),
+		Number:      payload.Number,
+		CourseID:    _id,
+		VideoPath:   c.Request().URL.Host + "uploads/courses/" + filepath.Clean(file.Filename),
 	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

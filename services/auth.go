@@ -47,5 +47,3 @@ func (s *AuthService) CheckUser(email string, password string) (*models.User, er
 	return &user, nil
 
 }
-
-

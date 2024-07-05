@@ -10,8 +10,8 @@ import (
 )
 
 var (
-  csrv = services.CourseService{}
-  usrv = services.UserService{}
+	csrv = services.CourseService{}
+	usrv = services.UserService{}
 )
 
 var RootQuery = graphql.NewObject(graphql.ObjectConfig{
@@ -23,7 +23,7 @@ var RootQuery = graphql.NewObject(graphql.ObjectConfig{
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
 					Type: graphql.String,
-				}, 
+				},
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				id, ok := p.Args["id"].(string)
@@ -39,12 +39,11 @@ var RootQuery = graphql.NewObject(graphql.ObjectConfig{
 				return course, nil
 			},
 		},
-    "courses":courseQuery,
-    "part":partQuery,
-    "user":userQuery,
-    "userEmail":userEmailQuery,
-    "userUsername":userUsernameQuery,
-    "searchCourse":courseSearchQuery,
+		"courses":      courseQuery,
+		"part":         partQuery,
+		"user":         userQuery,
+		"userEmail":    userEmailQuery,
+		"userUsername": userUsernameQuery,
+		"searchCourse": courseSearchQuery,
 	},
 })
-

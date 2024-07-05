@@ -1,8 +1,8 @@
 package types
+
 import (
 	"github.com/graphql-go/graphql"
 )
-
 
 var PartType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Part",
@@ -31,7 +31,6 @@ var PartType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-
 var EnrollType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Part",
 	Fields: graphql.Fields{
@@ -50,7 +49,7 @@ var EnrollType = graphql.NewObject(graphql.ObjectConfig{
 		"finished": &graphql.Field{
 			Type: graphql.NewList(PartType),
 		},
-  }})
+	}})
 
 var UserType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
