@@ -84,7 +84,6 @@ ALTER TABLE public.votes OWNER TO walid;
 --
 
 COPY public.candidates (candidateid, electionid, userid) FROM stdin;
-2d59d42b-763e-42d6-b870-c1a5ad7f0b08	e6b42efc-11f2-4ca0-9cf5-133f25efb6c7	29fbf22f-3ec6-4da7-8cfb-9e6a5fcfd86e
 \.
 
 
@@ -93,7 +92,6 @@ COPY public.candidates (candidateid, electionid, userid) FROM stdin;
 --
 
 COPY public.elections (election_end_date, election_start_date, electionid, election_name) FROM stdin;
-2024-07-12 01:00:00	2024-07-05 01:00:00	e6b42efc-11f2-4ca0-9cf5-133f25efb6c7	ri2assat l jomhiriya
 \.
 
 
@@ -102,7 +100,6 @@ COPY public.elections (election_end_date, election_start_date, electionid, elect
 --
 
 COPY public.users (usertype, userid, email, firstname, lastname, username, password) FROM stdin;
-ADMIN	29fbf22f-3ec6-4da7-8cfb-9e6a5fcfd86e	fdsaf	fasdf	fasdf	fasdf	$2a$11$7zWgU0NGAlmeKI.PgdTgbei4w3Y7kKbxSHmWYFHlzRtUXTe9Ecvz2
 \.
 
 
@@ -111,7 +108,6 @@ ADMIN	29fbf22f-3ec6-4da7-8cfb-9e6a5fcfd86e	fdsaf	fasdf	fasdf	fasdf	$2a$11$7zWgU0
 --
 
 COPY public.votes (candidateid, electionid, userid, vote_id) FROM stdin;
-2d59d42b-763e-42d6-b870-c1a5ad7f0b08	e6b42efc-11f2-4ca0-9cf5-133f25efb6c7	29fbf22f-3ec6-4da7-8cfb-9e6a5fcfd86e	a05fd3cd-808e-460c-b31b-0891e43f3f3b
 \.
 
 
@@ -124,19 +120,27 @@ ALTER TABLE ONLY public.candidates
 
 
 --
+-- Name: candidates candidates_userid_electionid_key; Type: CONSTRAINT; Schema: public; Owner: walid
+--
+
+ALTER TABLE ONLY public.candidates
+    ADD CONSTRAINT candidates_userid_electionid_key UNIQUE (userid, electionid);
+
+
+--
+-- Name: elections elections_election_name_election_start_date_key; Type: CONSTRAINT; Schema: public; Owner: walid
+--
+
+ALTER TABLE ONLY public.elections
+    ADD CONSTRAINT elections_election_name_election_start_date_key UNIQUE (election_name, election_start_date);
+
+
+--
 -- Name: elections elections_pkey; Type: CONSTRAINT; Schema: public; Owner: walid
 --
 
 ALTER TABLE ONLY public.elections
     ADD CONSTRAINT elections_pkey PRIMARY KEY (electionid);
-
-
---
--- Name: votes uksso2400yfr2eg1fx1y1eal8sr; Type: CONSTRAINT; Schema: public; Owner: walid
---
-
-ALTER TABLE ONLY public.votes
-    ADD CONSTRAINT uksso2400yfr2eg1fx1y1eal8sr UNIQUE (userid, electionid, candidateid);
 
 
 --
