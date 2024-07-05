@@ -50,12 +50,19 @@ public class CandidateService {
                 log.warn("Election not found for id: {}", candidateRequest.getElectionId());
                 return ResponseEntity.badRequest().body("Election not found");
             }
+
+            log.info("checking if candidate already exists");
+            if (candidateRepository.existsByUserIdAndElection(user, election)) {
+                log.warn("Candidate already exists");
+                return ResponseEntity.badRequest().body("Candidate already exists");
+            }
+
             Candidate candidate = Candidate.builder()
                     .userId(user)
                     .election(election)
                     .build();
             candidateRepository.save(candidate);
-            log.info("Candidate added successfully: {}", candidate);
+            log.info("Candidate added successfully: {}", candidate.getCandidateId());
             return ResponseEntity.ok().body(new HashMap<>(1) {
                 {
                     put("message", "Candidate added successfully");
@@ -74,7 +81,7 @@ public class CandidateService {
     public ResponseEntity<?> getAllCandidates() {
         try {
             log.info("Fetching all candidates");
-            return ResponseEntity.ok().body(candidateRepository.findAll());
+            return ResponseEntity.ok().body(candidateRepository.findAll().stream().map(Candidate::toDTO));
         } catch (Exception e) {
             log.error("Failed to fetch candidates", e);
             return ResponseEntity.badRequest().body("Failed to fetch candidates");
