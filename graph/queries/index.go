@@ -45,5 +45,6 @@ var RootQuery = graphql.NewObject(graphql.ObjectConfig{
 		"userEmail":    userEmailQuery,
 		"userUsername": userUsernameQuery,
 		"searchCourse": courseSearchQuery,
+    "enrollQuery":enrollmentQuery,
 	},
 })

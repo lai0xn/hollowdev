@@ -32,7 +32,7 @@ var PartType = graphql.NewObject(graphql.ObjectConfig{
 })
 
 var EnrollType = graphql.NewObject(graphql.ObjectConfig{
-	Name: "Part",
+	Name: "Enroll",
 	Fields: graphql.Fields{
 		"id": &graphql.Field{
 			Type: graphql.String,

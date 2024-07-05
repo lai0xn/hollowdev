@@ -1,13 +1,28 @@
 [
   {
     "method": "GET",
+    "path": "/swagger/*",
+    "name": "github.com/swaggo/echo-swagger.EchoWrapHandler.func1"
+  },
+  {
+    "method": "POST",
+    "path": "/auth/login",
+    "name": "github.com/lain0xn/challenge-8/handlers.(*AuthController).Login-fm"
+  },
+  {
+    "method": "POST",
+    "path": "/courses/parts/create/:id",
+    "name": "github.com/lain0xn/challenge-8/handlers.(*CourseController).CreatePart-fm"
+  },
+  {
+    "method": "GET",
     "path": "/",
     "name": "main.main.func1"
   },
   {
-    "method": "GET",
-    "path": "/swagger/*",
-    "name": "github.com/swaggo/echo-swagger.EchoWrapHandler.func1"
+    "method": "POST",
+    "path": "/webhook/:uid/:cid",
+    "name": "github.com/lain0xn/challenge-8/handlers.WebHook"
   },
   {
     "method": "POST",
@@ -23,21 +38,6 @@
     "method": "echo_route_not_found",
     "path": "/courses/*",
     "name": "github.com/labstack/echo/v4.init.func1"
-  },
-  {
-    "method": "POST",
-    "path": "/courses/parts/create/:id",
-    "name": "github.com/lain0xn/challenge-8/handlers.(*CourseController).CreatePart-fm"
-  },
-  {
-    "method": "POST",
-    "path": "/webhook/:uid/:cid",
-    "name": "github.com/lain0xn/challenge-8/handlers.WebHook"
-  },
-  {
-    "method": "POST",
-    "path": "/auth/login",
-    "name": "github.com/lain0xn/challenge-8/handlers.(*AuthController).Login-fm"
   },
   {
     "method": "POST",
