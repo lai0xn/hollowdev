@@ -1,5 +1,6 @@
 package com.example.votingsystem.service;
 
+import com.example.votingsystem.dto.LoginRequest;
 import com.example.votingsystem.dto.RegisterRequest;
 import com.example.votingsystem.dto.UserDTO;
 import com.example.votingsystem.jwt.JwtService;
@@ -9,6 +10,8 @@ import com.example.votingsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,7 @@ public class UserService {
     //TODO: Add PasswordEncoder and JwtService
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     /*
         register is used to register a user
@@ -50,7 +54,7 @@ public class UserService {
             }
 
             log.info("Creating user");
-            if(registerRequest.getUserType() == null) {
+            if (registerRequest.getUserType() == null) {
                 log.info("User type is null, setting to NORMAL");
             }
             User user = User.builder()
@@ -88,7 +92,7 @@ public class UserService {
         try {
             log.info("Fetching user with id: {}", userId);
             User user = userRepository.findById(userId).orElse(null);
-            if(user == null) {
+            if (user == null) {
                 log.warn("User not found for id: {}", userId);
                 return ResponseEntity.badRequest().body("User not found");
             }
@@ -114,6 +118,35 @@ public class UserService {
             return ResponseEntity.ok().body(userRepository.findAll().stream().map(UserDTO::fromUser));
         } catch (Exception e) {
             log.error("Failed to fetch users", e);
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
+
+    public ResponseEntity<?> login(LoginRequest loginRequest) {
+        try {
+            log.info("Logging in user with request: {}", loginRequest.getUsername());
+
+            log.info("Authenticating user");
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+            );
+
+            log.info("Fetching user");
+            User user = userRepository.findByUsername(loginRequest.getUsername()).orElse(null);
+            if (user == null) {
+                log.warn("User not found for username: {}", loginRequest.getUsername());
+                return ResponseEntity.badRequest().body("User not found");
+            }
+
+            String token = jwtService.generateToken(user);
+
+            return ResponseEntity.ok().body(
+                    new HashMap<>(1) {{
+                        put("message", "User logged in successfully!");
+                        put("token", token);
+                    }});
+        } catch (Exception e) {
+            log.error("Failed to login user");
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
