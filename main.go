@@ -27,20 +27,20 @@ import (
 
 // @host petstore.swagger.io
 // @BasePath /v2
-func main(){
-  config.Execute()
-  e := echo.New()
-  e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-  Format: "method=${method}, uri=${uri}, status=${status}\n",
-}))
-  e.GET("/",func(c echo.Context) error {
-    c.String(http.StatusOK,"Hello Echo!")
-    return nil
-  })
-  e.GET("/swagger/*", echoSwagger.WrapHandler)
-  routes.Execute(e)
-  db.Connect()
-  db.Setup()
-  go graph.Execute()
-  e.Start(":8080")
+func main() {
+	config.Execute()
+	e := echo.New()
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	}))
+	e.GET("/", func(c echo.Context) error {
+		c.String(http.StatusOK, "Hello Echo!")
+		return nil
+	})
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
+	routes.Execute(e)
+	db.Connect()
+	db.Setup()
+	go graph.Execute()
+	e.Start(":8080")
 }

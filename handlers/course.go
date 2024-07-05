@@ -11,29 +11,29 @@ import (
 )
 
 type CourseController struct {
- srv services.CourseService
+	srv services.CourseService
 }
 
-func (co *CourseController)CreateCourse(c echo.Context)error{
-  payload := new(CoursePayload)
-  if err := c.Bind(payload);err!= nil {
-     return echo.NewHTTPError(http.StatusInternalServerError,err.Error())
-  }
-  user := c.Get("user").(*jwt.Token)
-  claims := user.Claims.(*CustomClaims)
-  err := co.srv.CreateCourse(models.Course{
-    ID: primitive.NewObjectID(),
-    Title: payload.Title,
-    Description: payload.Description,
-    Price: payload.Price,
-    User:claims.ID ,
-  })
-  if err != nil {
-     return echo.NewHTTPError(http.StatusInternalServerError,err.Error())
-  }
-  return c.JSON(http.StatusCreated,Response{
-    Message: "Course Created",
-    Error: "no errors",
-    Data: "",
-  })
+func (co *CourseController) CreateCourse(c echo.Context) error {
+	payload := new(CoursePayload)
+	if err := c.Bind(payload); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(*CustomClaims)
+	err := co.srv.CreateCourse(models.Course{
+		ID:          primitive.NewObjectID(),
+		Title:       payload.Title,
+		Description: payload.Description,
+		Price:       payload.Price,
+		User:        claims.ID,
+	})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	return c.JSON(http.StatusCreated, Response{
+		Message: "Course Created",
+		Error:   "no errors",
+		Data:    "",
+	})
 }

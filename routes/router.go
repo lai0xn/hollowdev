@@ -9,23 +9,21 @@ import (
 	"github.com/lain0xn/challenge-8/middlewares"
 )
 
+func Execute(e *echo.Echo) {
+	authController := handlers.AuthController{}
+	auth := e.Group("/auth")
+	auth.POST("/register", authController.Register)
+	auth.POST("/login", authController.Login)
 
-func Execute(e *echo.Echo){
-  authController := handlers.AuthController{}
-  auth := e.Group("/auth")
-  auth.POST("/register",authController.Register)
-  auth.POST("/login",authController.Login)
-
-  courseController := handlers.CourseController{}
-  courseAdmin := e.Group("/courses")
-  courseAdmin.Use(echojwt.WithConfig(echojwt.Config{
-    SigningKey: []byte(config.JwtSecret()),
-    NewClaimsFunc: func(c echo.Context) jwt.Claims {
-      return new(handlers.CustomClaims)
-    },
-    
-  }))
-  courseAdmin.Use(middlewares.AdminMiddleware)
-  courseAdmin.POST("/create",courseController.CreateCourse)
+	courseController := handlers.CourseController{}
+	courseAdmin := e.Group("/courses")
+	courseAdmin.Use(echojwt.WithConfig(echojwt.Config{
+		SigningKey: []byte(config.JwtSecret()),
+		NewClaimsFunc: func(c echo.Context) jwt.Claims {
+			return new(handlers.CustomClaims)
+		},
+	}))
+	courseAdmin.Use(middlewares.AdminMiddleware)
+	courseAdmin.POST("/create", courseController.CreateCourse)
 
 }
