@@ -19,11 +19,21 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 
+/*
+    UserService is used to handle the user related requests
+    It is used to register a user, get a user by id and get all users
+ */
 public class UserService {
     private final UserRepository userRepository;
     //TODO: Add PasswordEncoder and JwtService
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+
+    /*
+        register is used to register a user
+        it takes a registerRequest object as a parameter
+        and returns a response entity
+     */
 
     public ResponseEntity<?> register(RegisterRequest registerRequest) {
         try {
@@ -69,6 +79,11 @@ public class UserService {
         }
     }
 
+    /*
+        getUserById is used to get a user by id
+        it takes the user id as a parameter
+        and returns a response entity
+     */
     public ResponseEntity<?> getUserById(UUID userId) {
         try {
             log.info("Fetching user with id: {}", userId);
@@ -88,6 +103,10 @@ public class UserService {
         }
     }
 
+    /*
+        getAllUsers is used to get all the users in the database
+        it returns a response entity
+     */
     public ResponseEntity<?> getAllUsers() {
         // map all users to UserDTO
         try {
