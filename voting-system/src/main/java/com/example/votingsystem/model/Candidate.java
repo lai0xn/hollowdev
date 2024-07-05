@@ -10,7 +10,12 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
-@Table(name = "candidates")
+@Table(name = "candidates" , uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"userid", "electionid"})
+        /*
+            The unique constraint is used to ensure that a candidate can only be in an election once
+         */
+})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
