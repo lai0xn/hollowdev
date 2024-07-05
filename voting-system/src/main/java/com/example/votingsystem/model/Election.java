@@ -16,7 +16,14 @@ import java.util.UUID;
     u can check the readme file #dbmodel to see the database model
  */
 
-@Table(name = "elections")
+@Table(name = "elections" , uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"election_name" , "election_start_date" })
+        /*
+            The unique constraint is used to ensure that an election can only be in the database once
+            no two elections can have the same name, start date
+         */
+    }
+)
 @Entity
 @Builder
 @Data
