@@ -46,3 +46,9 @@ JWT_SECRET=
 ```
  mvn spring-boot:run
 ```
+
+## API
+
+```http
+http://localhost:8080/swagger-ui.html
+```
