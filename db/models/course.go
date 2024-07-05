@@ -15,7 +15,7 @@ type Course struct {
 
 	Reviews float32 `json:"reviews,omitempty" validate:"required"`
 
-	Enrollers []User `json:"enrollers,omitempty" validate:"required"`
+	Enrollements []Enrollment `json:"enrollers,omitempty" validate:"required"`
 
 	User primitive.ObjectID `json:"user_id,omitempty" validate:"required"`
 

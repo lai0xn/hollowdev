@@ -1,13 +1,10 @@
-package graph
-
+package types
 import (
 	"github.com/graphql-go/graphql"
-	"github.com/lain0xn/challenge-8/services"
 )
 
-var csrv = services.CourseService{}
 
-var partType = graphql.NewObject(graphql.ObjectConfig{
+var PartType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Part",
 	Fields: graphql.Fields{
 		"id": &graphql.Field{
@@ -34,16 +31,34 @@ var partType = graphql.NewObject(graphql.ObjectConfig{
 	},
 })
 
-var userType = graphql.NewObject(graphql.ObjectConfig{
+
+var EnrollType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "Part",
+	Fields: graphql.Fields{
+		"id": &graphql.Field{
+			Type: graphql.String,
+		},
+		"course": &graphql.Field{
+			Type: CourseType,
+		},
+		"user": &graphql.Field{
+			Type: UserType,
+		},
+		"progress": &graphql.Field{
+			Type: graphql.Int,
+		},
+		"finished": &graphql.Field{
+			Type: graphql.NewList(PartType),
+		},
+  }})
+
+var UserType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
 	Fields: graphql.Fields{
 		"id": &graphql.Field{
 			Type: graphql.String,
 		},
 		"username": &graphql.Field{
-			Type: graphql.String,
-		},
-		"password": &graphql.Field{
 			Type: graphql.String,
 		},
 		"is_admin": &graphql.Field{
@@ -56,12 +71,12 @@ var userType = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.Boolean,
 		},
 		"courses": &graphql.Field{
-			Type: graphql.NewList(courseType),
+			Type: graphql.NewList(CourseType),
 		},
 	},
 })
 
-var courseType = graphql.NewObject(graphql.ObjectConfig{
+var CourseType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Course",
 	Fields: graphql.Fields{
 		"id": &graphql.Field{
@@ -86,7 +101,7 @@ var courseType = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.Float,
 		},
 		"parts": &graphql.Field{
-			Type: graphql.NewList(partType),
+			Type: graphql.NewList(PartType),
 		},
 	},
 })

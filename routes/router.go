@@ -10,6 +10,7 @@ import (
 )
 
 func Execute(e *echo.Echo) {
+  e.POST("/webhook/:uid/:cid",handlers.WebHook)
 	authController := handlers.AuthController{}
 	auth := e.Group("/auth")
 	auth.POST("/register", authController.Register)
@@ -25,5 +26,7 @@ func Execute(e *echo.Echo) {
 	}))
 	courseAdmin.Use(middlewares.AdminMiddleware)
 	courseAdmin.POST("/create", courseController.CreateCourse)
+  courseAdmin.POST("/parts/create/:id", courseController.CreatePart)
+
 
 }

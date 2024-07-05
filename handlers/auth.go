@@ -61,6 +61,7 @@ func (auth *AuthController) Register(c echo.Context) error {
 		Username:     payload.Username,
 		Email:        payload.Email,
 		Password:     payload.Password,
+    Courses: []models.Enrollment{},
 		Is_Admin:     false,
 		Is_Sub_Admin: false,
 	}); err != nil {

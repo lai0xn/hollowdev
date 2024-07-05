@@ -1,22 +1,29 @@
-package graph
+package queries
 
 import (
 	"fmt"
 
 	"github.com/graphql-go/graphql"
 	"github.com/lain0xn/challenge-8/db/models"
+	"github.com/lain0xn/challenge-8/graph/types"
+	"github.com/lain0xn/challenge-8/services"
 )
 
-var rootQuery = graphql.NewObject(graphql.ObjectConfig{
+var (
+  csrv = services.CourseService{}
+  usrv = services.UserService{}
+)
+
+var RootQuery = graphql.NewObject(graphql.ObjectConfig{
 	Name: "rootQuery",
 	Fields: graphql.Fields{
 		"course": &graphql.Field{
-			Type:        courseType,
+			Type:        types.CourseType,
 			Description: "get a course by id",
 			Args: graphql.FieldConfigArgument{
 				"id": &graphql.ArgumentConfig{
 					Type: graphql.String,
-				},
+				}, 
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				id, ok := p.Args["id"].(string)
@@ -32,5 +39,12 @@ var rootQuery = graphql.NewObject(graphql.ObjectConfig{
 				return course, nil
 			},
 		},
+    "courses":courseQuery,
+    "part":partQuery,
+    "user":userQuery,
+    "userEmail":userEmailQuery,
+    "userUsername":userUsernameQuery,
+    "searchCourse":courseSearchQuery,
 	},
 })
+

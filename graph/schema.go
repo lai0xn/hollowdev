@@ -1,7 +1,12 @@
 package graph
 
-import "github.com/graphql-go/graphql"
+import (
+	"github.com/graphql-go/graphql"
+	"github.com/lain0xn/challenge-8/graph/mutations"
+	"github.com/lain0xn/challenge-8/graph/queries"
+)
 
 var Schema, _ = graphql.NewSchema(graphql.SchemaConfig{
-	Query: rootQuery,
+	Query: queries.RootQuery,
+  Mutation: mutations.RootMutation,
 })

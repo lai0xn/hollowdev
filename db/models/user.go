@@ -9,5 +9,5 @@ type User struct {
 	Password     string             `json:"password,omitempty" validate:"required"`
 	Is_Admin     bool               `json:"is_admin,omitempty" validate:"required"`
 	Is_Sub_Admin bool               `json:"is_sub_admin,omitempty" validate:"required"`
-	Courses      []Course           `json:"courses,omitempty" validate:"required"`
+	Courses      []Enrollment          `json:"courses,omitempty" validate:"required"`
 }

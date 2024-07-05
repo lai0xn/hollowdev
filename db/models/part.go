@@ -9,5 +9,4 @@ type Part struct {
 	Number      int                `json:"number,omitempty" validate:"required"`
 	VideoPath   string             `json:"video_path,omitempty" validate:"required"`
 	CourseID    primitive.ObjectID `json:"course_id,omitempty" validate:"required"`
-	OwnerID     primitive.ObjectID `json:"owner_id,omitempty" validate:"required"`
 }
