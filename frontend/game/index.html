@@ -16,7 +16,7 @@
 		</header>
 		<main>
 			<div class="container">
-				<h2 id="turn">Turn: HEXXT (X)</h2>
+				<h2 id="turn">waiting...</h2>
 				<table>
 					<tr>
 						<td class="empty" id="board[0]"></td>
@@ -24,7 +24,7 @@
 						<td class="empty" id="board[2]"></td>
 					</tr>
 					<tr>
-						<td class="empty" id="3">x</td>
+						<td class="empty" id="board[3]"></td>
 						<td class="empty" id="board[4]"></td>
 						<td class="empty" id="board[5]"></td>
 					</tr>
@@ -35,27 +35,72 @@
 					</tr>
 				</table>
 			</div>
+			<div id="myTurn" style="display: none">its your turn!</div>
+			<div id="opponentTurn" style="display: none">
+				waiting you your opponent..
+			</div>
 		</main>
 	</body>
 	<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 	<script>
 		const playerName = sessionStorage.getItem('playerName');
 		const roomId = sessionStorage.getItem('roomId');
-
-		console.log({playerName, roomId});
+		let myTurn = false;
 
 		const socket = io('http://localhost:3000');
 		socket.on('throw', (error) => {
 			alert(error);
 			window.location.href = '/';
 		});
+		console.log(socket);
 
 		socket.emit('join', { roomId, playerName });
 		socket.on('update', (game) => {
 			console.log(game);
+			myTurn = game.players[game.currentPlayer] === playerName;
+			if (myTurn) {
+				document.getElementById('myTurn').style.display = 'block';
+				document.getElementById('opponentTurn').style.display = 'none';
+			} else if (game.players[0] && game.players[1]){
+				document.getElementById('myTurn').style.display = 'none';
+				document.getElementById('opponentTurn').style.display = 'block';
+			}
+
 			document.getElementById('room-id').innerText = game.roomId;
-			document.getElementById('player-1').innerText = game.players[0] ?? 'waiting...';
-			document.getElementById('player-2').innerText = game.players[1] ?? 'waiting...';
+
+			document.getElementById('player-1').innerText =
+				game.players[0] ?? 'waiting...';
+			document.getElementById('player-2').innerText =
+				game.players[1] ?? 'waiting...';
+
+			if (!game.players[0] || !game.players[1]) {
+				document.getElementById('turn').innerText = 'waiting...';
+			} else {
+				document.getElementById('turn').innerText = `turn : ${
+					game.players[game.currentPlayer]
+				} (${game.currentPlayer === 0 ? 'x' : 'o'})`;
+			}
+
+			game.board.forEach((cell, index) => {
+				document.getElementById(`board[${index}]`).innerText = cell;
+			});
+		});
+
+		for (let index = 0; index < 9; index++) {
+			const element = document.getElementById(`board[${index}]`);
+			element.addEventListener('click', () => {
+				if (element.innerText !== '') return;
+				if (!myTurn) return;
+				socket.emit('move', { index });
+			});
+		}
+
+		socket.on('gameOver', ({ winState }) => {
+			if (winState === 'draw') {
+				alert('draw');
+			} else {
+				alert(`${winState} wins!`);
+			}
 		});
 	</script>
 </html>

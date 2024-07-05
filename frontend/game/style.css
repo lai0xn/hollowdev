@@ -18,12 +18,13 @@ h1 {
 h2 span {
 	padding: 3px 8px;
 	border-radius: 8px;
-	background-color: #78b9ff;
+	background-color: #aad2fd;
 }
 main {
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	flex-direction: column;
 	padding-bottom: 50px;
 }
 .container {
@@ -52,4 +53,12 @@ td:empty {
 }
 td:empty:hover {
 	background-color: #f0f0f0;
+}
+#myTurn{
+	padding: 20px;
+	color: #007bff;
+}
+#opponentTurn{
+	padding: 20px;
+	color: #e24e7b;
 }

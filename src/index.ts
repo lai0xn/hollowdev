@@ -18,8 +18,9 @@ const io = new SocketIOServer(server, {
 interface Game {
 	roomId: string;
 	players: string[];
-	board: ('X' | 'O')[];
-	currentPlayer: 0 | 1;
+	board: ('X' | 'O' | null)[];
+	starter: 0 | 1;
+	currentPlayer: 0 | 1; // index of players. x is 0, o is 1
 }
 const games: Game[] = [];
 
@@ -32,14 +33,17 @@ app.post('/create', (req, res) => {
 		roomId = Math.random().toString(36).substring(7);
 	}
 
+	const starter = Math.floor(Math.random() * 2) as 0 | 1;
 	const game: Game = {
 		roomId,
 		players: [],
-		board: Array(9).fill(''),
-		currentPlayer: 0,
+		board: Array(9).fill(null),
+		starter,
+		currentPlayer: starter,
 	};
 	games.push(game);
 	res.send({ roomId });
+	console.log('new room created', { games });
 });
 app.post('/canJoin', (req, res) => {
 	const { roomId } = req.body;
@@ -61,6 +65,8 @@ app.post('/canJoin', (req, res) => {
 
 io.on('connection', (socket) => {
 	let currentRoom = '';
+	let playerIndex = -1;
+
 	socket.on('join', ({ roomId, playerName }) => {
 		const game = games.find((game) => game.roomId === roomId);
 
@@ -72,38 +78,93 @@ io.on('connection', (socket) => {
 			socket.emit('throw', 'Room not found');
 			return;
 		}
-		if (game.players.length >= 2) {
-			socket.emit('throw', 'Room is full');
-			return;
-		}
-		if (!playerName) {
-			socket.emit('throw', 'Player name is required');
-			return;
-		}
 
 		if (game.players.includes(playerName)) {
 			console.log('join back', { roomId, playerName });
 		} else {
+			if (game.players.length >= 2) {
+				socket.emit('throw', 'Room is full');
+				return;
+			}
 			console.log('join', { roomId, playerName });
 			game.players.push(playerName);
 		}
 
 		currentRoom = roomId;
+		playerIndex = game.players.indexOf(playerName);
 		socket.join(roomId);
 		io.to(roomId).emit('update', game);
 	});
+
 	socket.on('move', ({ index }) => {
-		// BUG: check if its the player's turn
-		// TODO: validate index, check if game is over
 		const game = games.find((game) => game.roomId === currentRoom);
 		if (!game) {
 			socket.emit('throw', 'Room not found');
 			return;
 		}
-		game.board[index] = game.currentPlayer ? 'X' : 'O';
+
+		// prevent cheating
+		// Check if it's the player's turn
+		if (game.currentPlayer !== playerIndex) {
+			socket.emit('throw', 'Not your turn');
+			return;
+		}
+
+		// Validate index
+		if (
+			index < 0 ||
+			index >= game.board.length ||
+			game.board[index] != null
+		) {
+			socket.emit('throw', 'Invalid move');
+			return;
+		}
+
+		// Make the move
+		game.board[index] = game.currentPlayer === 0 ? 'X' : 'O';
 		game.currentPlayer = game.currentPlayer ? 0 : 1;
 		io.to(currentRoom).emit('update', game);
+
+		const winState = getWinState(game);
+		if (winState) {
+			io.to(currentRoom).emit('gameOver', { winState });
+			game.board = Array(9).fill(null);
+			game.currentPlayer = game.starter;
+			game.starter = game.starter ? 0 : 1;
+			io.to(currentRoom).emit('update', game);
+			return;
+		}
 	});
+
+	function getWinState(game: Game) {
+		const winningCombos = [
+			[0, 1, 2],
+			[3, 4, 5],
+			[6, 7, 8],
+			[0, 3, 6],
+			[1, 4, 7],
+			[2, 5, 8],
+			[0, 4, 8],
+			[2, 4, 6],
+		];
+		for (const combo of winningCombos) {
+			const [a, b, c] = combo;
+			if (
+				game.board[a] &&
+				game.board[a] === game.board[b] &&
+				game.board[a] === game.board[c]
+			) {
+				const winner =
+					game.board[a] == 'X' ? game.players[0] : game.players[1];
+				return winner;
+			}
+		}
+		if (game.board.every((cell) => cell !== null)) {
+			return 'draw';
+		}
+
+		return false;
+	}
 });
 
 server.listen(3000, () => {
