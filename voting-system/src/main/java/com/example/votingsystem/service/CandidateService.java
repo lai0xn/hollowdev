@@ -44,18 +44,42 @@ public class CandidateService {
             User user = userRepository.findById(candidateRequest.getUserId()).orElse(null);
             if (user == null) {
                 log.warn("User not found for id: {}", candidateRequest.getUserId());
-                return ResponseEntity.badRequest().body("User not found");
+                return ResponseEntity.badRequest().body(new HashMap<>(1){
+                    {
+                        put("message", "User not found");
+                    }
+
+                });
             }
+            log.info("check if the user is admin");
+            if (user.getUsertype().name().equals("ADMIN")) {
+                log.warn("Admin cannot be a candidate");
+                return ResponseEntity.badRequest().body(new HashMap<>(1){
+                    {
+                        put("message", "Admin cannot be a candidate");
+                    }
+
+                });
+            }
+            log.info("check if election exists");
             Election election = electionRepository.findById(candidateRequest.getElectionId()).orElse(null);
             if (election == null) {
                 log.warn("Election not found for id: {}", candidateRequest.getElectionId());
-                return ResponseEntity.badRequest().body("Election not found");
+                return ResponseEntity.badRequest().body(new HashMap<>(1){
+                    {
+                        put("message", "Election not found");
+                    }
+                });
             }
 
             log.info("checking if candidate already exists");
             if (candidateRepository.existsByUserIdAndElection(user, election)) {
                 log.warn("Candidate already exists");
-                return ResponseEntity.badRequest().body("Candidate already exists");
+                return ResponseEntity.badRequest().body(new HashMap<>(1){
+                    {
+                        put("message", "Candidate already exists");
+                    }
+                });
             }
 
             Candidate candidate = Candidate.builder()
@@ -64,62 +88,34 @@ public class CandidateService {
                     .build();
             candidateRepository.save(candidate);
             log.info("Candidate added successfully: {}", candidate.getCandidateId());
-            return ResponseEntity.ok().body(new HashMap<>(1) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(new HashMap<>(1) {
                 {
                     put("message", "Candidate added successfully");
                 }
             });
         } catch (Exception e) {
             log.error("Failed to add candidate", e);
-            return ResponseEntity.badRequest().body("Failed to add candidate");
+            return ResponseEntity.badRequest().body(new HashMap<>(1){
+                {
+                    put("message", "Failed to add candidate");
+                }
+
+            });
         }
     }
 
-    /*
-        getAllCandidates is used to get all the candidates in the database
-        it returns a response entity
-     */
-    public ResponseEntity<?> getAllCandidates() {
-        try {
-            log.info("Fetching all candidates");
-            return ResponseEntity.ok().body(candidateRepository.findAll().stream().map(Candidate::toDTO));
-        } catch (Exception e) {
-            log.error("Failed to fetch candidates", e);
-            return ResponseEntity.badRequest().body("Failed to fetch candidates");
-        }
-    }
 
-    /*
-        getCandidateById is used to get a candidate by id
-        it takes the candidate id as a parameter
-        and returns a response entity
-     */
-    public ResponseEntity<?> getCandidateById(String id) {
-        try {
-            log.info("Fetching candidate with id: {}", id);
-            UUID candidateId = UUID.fromString(id);
-            Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
-            if (candidate == null) {
-                log.warn("Candidate not found for id: {}", id);
-                return ResponseEntity.badRequest().body("Candidate not found");
-            }
-            return ResponseEntity.ok().body(candidate.toDTO());
-        } catch (Exception e) {
-            log.error("Failed to fetch candidate", e);
-            return ResponseEntity.badRequest().body("Failed to fetch candidate");
-        }
-    }
+
     /*
         getCandidateVotes is used to get the votes of a candidate
         it takes the candidate id and the election id as parameters
         and returns a response entity
      */
-    public ResponseEntity<?> getCandidateVotes(String id, String election) {
+    public ResponseEntity<?> getCandidateVotes(String id) {
         try {
-            log.info("Fetching votes for candidate id: {} in election id: {}", id, election);
+            log.info("Fetching votes for candidate id: {}", id);
             UUID candidateId = UUID.fromString(id);
-            UUID electionId = UUID.fromString(election);
-            int votes = voteRepository.countByCandidateId(candidateId, electionId);
+            int votes = voteRepository.countByCandidateId(candidateId);
             return ResponseEntity.ok().body(new HashMap<>(1) {
                 {
                     put("votes", votes);
@@ -127,7 +123,14 @@ public class CandidateService {
             });
         } catch (Exception e) {
             log.error("Failed to fetch candidate votes", e);
-            return ResponseEntity.badRequest().body("Failed to fetch candidate votes");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<>(1){
+                {
+                    put("message", "Failed to fetch candidate votes");
+                }
+            });
+        }
+    }
+
     public ResponseEntity<?> deleteCandidate(String id) {
         try {
             log.info("Deleting candidate with id: {}", id);
