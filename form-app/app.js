@@ -2,12 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
-
+const cors = require("cors");
 const app = express();
 const port = 10000;
 
 require("dotenv").config();
 
+app.use(cors());
 // Middleware
 app.use(bodyParser.json());
 
@@ -22,7 +23,7 @@ mongoose
   });
 
 // Use auth routes
-app.use("/auth", authRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 // basic route to test the server
 app.get("/", (req, res) => {
