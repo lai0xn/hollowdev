@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Table(name = "users")
@@ -42,6 +43,13 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private USERTYPE usertype  = USERTYPE.NORMAL;
+
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Candidate> candidates;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vote> votes;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
