@@ -1,6 +1,9 @@
 package com.example.votingsystem.jwt;
 
 
+import com.example.votingsystem.model.USERTYPE;
+import com.example.votingsystem.model.User;
+import com.example.votingsystem.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -21,6 +25,7 @@ public class JwtService {
 
     //  Inject Environment to use later to retrieve the environment variables
     final Environment environment;
+    private final UserRepository userRepository;
 
 
     // this is used to extract the user from the token to use later in authorization process
@@ -56,14 +61,14 @@ public class JwtService {
     public String generateToken(
             UserDetails userDetails
     ) {
+        User user = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+        assert user != null;
+        USERTYPE role = user.getUsertype();
         String secret = environment.getProperty("JWT_SECRET");
-
         return Jwts.builder()
-                .claims(
-                        new HashMap<String, Object>() {{
-                            put("role", userDetails.getAuthorities());
-                        }}
-                )
+                .claims(new HashMap<>(){{
+                    put("role", role);
+                }})
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
