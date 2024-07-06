@@ -3,9 +3,10 @@ package com.example.votingsystem.dto;
 import com.example.votingsystem.model.USERTYPE;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class RegisterRequest {
     private final String firstname;
     private final String lastname;

@@ -1,13 +1,14 @@
 package com.example.votingsystem.dto;
 
+import com.example.votingsystem.model.Vote;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-
+@NoArgsConstructor
 public class VoteRequest {
-    private String candidateId;
-    private String electionId;
-    private String voterId;
+    private  String candidateId;
 }

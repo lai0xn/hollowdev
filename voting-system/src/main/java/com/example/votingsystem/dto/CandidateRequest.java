@@ -2,10 +2,11 @@ package com.example.votingsystem.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Builder
+@NoArgsConstructor
 @Data
 public class CandidateRequest {
     private UUID userId;
