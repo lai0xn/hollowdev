@@ -3,6 +3,7 @@ package com.example.votingsystem.controller;
 
 import com.example.votingsystem.dto.LoginRequest;
 import com.example.votingsystem.dto.RegisterRequest;
+import com.example.votingsystem.model.USERTYPE;
 import com.example.votingsystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -29,25 +30,32 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<?> userRegister(@RequestBody RegisterRequest registerRequest) {
-        return userService.register(registerRequest);
+        return userService.register(registerRequest , USERTYPE.NORMAL);
     }
 
+
+    /*
+        adminRegister is used to register an admin
+        it takes a registerRequest object as a parameter
+        and returns a response entity
+     */
+    @PostMapping("/registerAdmin")
+    public ResponseEntity<?> adminRegister(@RequestBody RegisterRequest registerRequest) {
+        return userService.register(registerRequest , USERTYPE.ADMIN);
+    }
+
+    /*
+        userLogin is used to login a user
+        it takes a loginRequest object as a parameter
+        and returns a response entity
+     */
 
     @PostMapping("/login")
     public ResponseEntity<?> userLogin(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
     }
 
-    /*
-        getUserById is used to get a user by id
-        it takes the user id as a parameter
-        and returns a response entity
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById( @PathVariable String id) {
-        UUID userId = UUID.fromString(id);
-        return userService.getUserById(userId);
-    }
+
     /*
         getAllUsers is used to get all the users in the database
         it returns a response entity
