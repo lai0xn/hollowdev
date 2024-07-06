@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/v1/candidate/")
 @RequiredArgsConstructor
@@ -32,36 +34,17 @@ public class CandidateController {
     }
 
     /*
-        getAllCandidates is used to get all the candidates in the database
-        it returns a response entity
-     */
-    @GetMapping("/all")
-    ResponseEntity<?> getAllCandidates() {
-        return candidateService.getAllCandidates();
-    }
-
-    /*
         getCandidateById is used to get a candidate by id
         it takes the candidate id as a parameter
         and returns a response entity
      */
-    @GetMapping("/{id}")
-    ResponseEntity<?> getCandidateById(
+
+    @DeleteMapping("delete/{id}")
+    ResponseEntity<?> deleteCandidate(
             @PathVariable String id
     ) {
-        return candidateService.getCandidateById(id);
+        return candidateService.deleteCandidate(id);
     }
 
-    /*
-        getCandidateVotes is used to get the votes of a candidate
-        it takes the candidate id and the election id as parameters
-        and returns a response entity
-     */
-    @GetMapping("/{id}/votes")
-    ResponseEntity<?> getCandidateVotes(
-            @PathVariable String id ,
-            @RequestParam(value = "electionId", required = true) String electionId
-    ) {
-        return candidateService.getCandidateVotes(id, electionId);
-    }
+
 }
