@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 
 const app = express();
-const port = 3000;
+const port = 10000;
 
 require("dotenv").config();
 
