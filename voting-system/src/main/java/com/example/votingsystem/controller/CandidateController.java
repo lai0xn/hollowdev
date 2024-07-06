@@ -34,9 +34,7 @@ public class CandidateController {
     }
 
     /*
-        getCandidateById is used to get a candidate by id
-        it takes the candidate id as a parameter
-        and returns a response entity
+        deleteCandidate is used to delete a candidate from the database
      */
 
     @DeleteMapping("delete/{id}")
