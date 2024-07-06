@@ -1,7 +1,12 @@
 package com.example.votingsystem.config;
 
+import com.example.votingsystem.model.USERTYPE;
+import com.example.votingsystem.model.User;
 import com.example.votingsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
  */
 public class AuthConfig {
+    private static final Logger log = LoggerFactory.getLogger(AuthConfig.class);
     private final UserRepository userRepository;
 
     @Bean
@@ -50,5 +56,36 @@ public class AuthConfig {
     // this is used to encode the password
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder(11);
+    }
+
+    // create default admin user
+    @Bean
+    public CommandLineRunner createDefaultAdminUser() {
+        return _ -> {
+            try {
+                log.info("Creating default admin user");
+                log.info("Checking if admin user exists");
+                if (!userRepository.existsByUsername("admin")) {
+                    log.info("Admin user does not exist, creating default admin user");
+
+                    log.info("Creating default admin user");
+                    User user = User.builder()
+                            .firstname("admin")
+                            .lastname("admin")
+                            .username("admin")
+                            .email("admin")
+                            .password(passwordEncoder().encode("admin"))
+                            .usertype(USERTYPE.ADMIN)
+                            .build();
+
+                    log.info("Saving default admin user to database");
+                    userRepository.save(user);
+                }else {
+                    log.info("Admin user already exists");
+                }
+            }catch (Exception e){
+                log.error("Error creating default admin user");
+            }
+        };
     }
 }
