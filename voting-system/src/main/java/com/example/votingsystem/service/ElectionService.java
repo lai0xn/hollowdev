@@ -1,6 +1,8 @@
 package com.example.votingsystem.service;
 
 import com.example.votingsystem.dto.ElectionRequest;
+import com.example.votingsystem.dto.VoteDTO;
+import com.example.votingsystem.model.Candidate;
 import com.example.votingsystem.model.Election;
 import com.example.votingsystem.repository.ElectionRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.beanvalidation.SpringConstraintValidatorFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 @Slf4j
 @Service
