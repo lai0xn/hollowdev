@@ -31,17 +31,6 @@ public class ElectionController {
         return electionService.addElection(electionRequest);
     }
 
-    /*
-        getElectionById is used to get an election by id
-        it takes the election id as a parameter
-        and returns a response entity
-     */
-    @GetMapping("{id}")
-    ResponseEntity<?> getElectionById(
-            @PathVariable String id
-    ) {
-        return electionService.getElectionById(id);
-    }
 
     /*
         getAllElections is used to get all the elections in the database
@@ -51,5 +40,44 @@ public class ElectionController {
     @GetMapping("/all")
     ResponseEntity<?> getAllElections() {
         return electionService.getAllElections();
+    }
+
+
+    /*
+        getElectionById is used to get an election by id
+        it takes the election id as a parameter
+        and returns a response entity
+     */
+    @GetMapping("/{id}/candidates")
+    ResponseEntity<?> getElectionCandidates(
+            @PathVariable String id
+    ) {
+        return electionService.getElectionCandidates(id);
+    }
+
+
+    /*
+        deleteElection is used to delete an election by id
+        it takes the election id as a parameter
+        and returns a response entity
+     */
+    @DeleteMapping("delete/{id}")
+    ResponseEntity<?> deleteElection(
+            @PathVariable String id
+    ) {
+        return electionService.deleteElection(id);
+    }
+
+
+    /*
+        getElectionRank is used to get the election rank
+        it takes the election id as a parameter
+        and returns a response entity
+     */
+    @GetMapping("/{id}/rank")
+    ResponseEntity<?> getElectionRank(
+            @PathVariable String id
+    ) {
+        return electionService.getElectionVoteRanking(id);
     }
 }
