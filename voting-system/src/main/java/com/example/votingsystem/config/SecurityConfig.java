@@ -26,24 +26,28 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
-    public SecurityFilterChain securityFilterChain (
-            HttpSecurity http ,
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
             JwtAuthFilter jwtAuthenticationFilter
-    ) throws Exception{
+    ) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable) // Disable CSRF
-                .cors(AbstractHttpConfigurer::disable) // Disable CORS
                 .authorizeHttpRequests(
                         req -> req
-                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/webjars/**").permitAll() // Permit all requests to the swagger-ui
-                                .requestMatchers("/api/v1/user/**").permitAll() // Permit all requests to /api/v1/user/
-                                .requestMatchers("/api/v1/candidate/add").hasAuthority("ADMIN") // Permit requests to /api/v1/candidate/add only if the user has the ADMIN authority
-                                .requestMatchers("/api/v1/election/add").hasAuthority("ADMIN") // Permit requests to /api/v1/election/add only if the user has the ADMIN authority
-                                .requestMatchers("/api/v1/votes/add").hasAuthority("USER") // Permit requests to /api/v1/votes/add only if the user has the USER authority
+                                // Permit all requests to the swagger-ui
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**", "/webjars/**").permitAll()
+                                // Permit requests to /api/v1/user/register and /api/v1/user/login
+                                .requestMatchers("/api/v1/user/register", "api/v1/user/login").permitAll()
+                                // Permit requests to /api/v1/user/all and /api/v1/user/registerAdmin only if the user has the ADMIN authority
+                                .requestMatchers("/api/v1/user/all" , "/api/v1/user/registerAdmin").hasAuthority("ADMIN")
+                                // Permit requests to /api/v1/candidate/add and /api/v1/candidate/delete/ and /api/v1/candidate/{}/votes and /api/v1/election/{}/rank only if the user has the ADMIN authority
+                                .requestMatchers("/api/v1/candidate/add" , "/api/v1/candidate/delete/" , "/api/v1/candidate/{}/votes"  , "/api/v1/election/{}/rank").hasAuthority("ADMIN")
+                                // Permit requests to /api/v1/votes/add only if the user has the USER authority
+                                .requestMatchers("/api/v1/votes/add").hasAuthority("NORMAL")
                                 .anyRequest().authenticated() // Authenticate all other requests
                 )
                 .authenticationProvider(authenticationProvider) // Set the authentication provider
-                .addFilterBefore(jwtAuthenticationFilter , UsernamePasswordAuthenticationFilter.class) // Add the JWT authentication filter before the UsernamePasswordAuthenticationFilter
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add the JWT authentication filter before the UsernamePasswordAuthenticationFilter
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))// Set the session creation policy to STATELESS where STATELESS means no session will be created
         ;
         return http.build(); // Build the http object
