@@ -150,4 +150,13 @@ public class UserService {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+    public String getAuthenticatedUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return null;
+        }
+        return Objects.requireNonNull(userRepository.findByUsername(authentication.getName()).map(User::getId).orElse(null)).toString();
+    }
+
+
 }
