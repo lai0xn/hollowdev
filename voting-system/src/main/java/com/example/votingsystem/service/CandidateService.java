@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -127,6 +128,32 @@ public class CandidateService {
         } catch (Exception e) {
             log.error("Failed to fetch candidate votes", e);
             return ResponseEntity.badRequest().body("Failed to fetch candidate votes");
+    public ResponseEntity<?> deleteCandidate(String id) {
+        try {
+            log.info("Deleting candidate with id: {}", id);
+            UUID candidateId = UUID.fromString(id);
+            log.info("checking if candidate exists {}", candidateId);
+            if (!candidateRepository.existsById(candidateId)) {
+                log.warn("Candidate not found for id: {}", id);
+                return ResponseEntity.badRequest().body(new HashMap<>(1) {
+                    {
+                        put("message", "Candidate not found");
+                    }
+                });
+            }
+            candidateRepository.deleteById(candidateId);
+            return ResponseEntity.ok().body(new HashMap<>(1) {
+                {
+                    put("message", "Candidate deleted successfully");
+                }
+            });
+        } catch (Exception e) {
+            log.error("Failed to delete candidate", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new HashMap<>(1){
+                {
+                    put("message", "Failed to delete candidate");
+                }
+            });
         }
     }
 }
