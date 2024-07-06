@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -40,6 +41,9 @@ public class Candidate {
     @ManyToOne
     @JoinColumn(name = "electionid", nullable = false)
     private Election election;
+
+    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vote> votes;
 
     public CandidateDTO toDTO() {
         return CandidateDTO.builder()
