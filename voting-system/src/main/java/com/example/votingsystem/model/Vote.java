@@ -1,5 +1,6 @@
 package com.example.votingsystem.model;
 
+import com.example.votingsystem.dto.VoteDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +12,15 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "votes" , uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"userid" , "electionid" , "candidateid"})
+        @UniqueConstraint(columnNames = {"userid" , "electionid" }),
         /*
-        *   To ensure that a user can only vote once in an election, we need to add a unique constraint to the votes table
-        *   This constraint will ensure that a user can only vote once in an election
-        *
+        *   To ensure that a user can only vote once in an election we added a unique constraint
         * */
+
+        @UniqueConstraint(columnNames = {"userid" , "candidateid" })
+        /*
+        *   To ensure that a user can only vote once for a candidate in an election we added a unique constraint
+         */
 })
 
 /*
@@ -44,4 +48,12 @@ public class Vote {
     @ManyToOne
     @JoinColumn(name = "electionid", nullable = false)
     private Election election;
+
+
+    public VoteDTO toDTO() {
+        return VoteDTO.builder()
+                .candidateFirstName(candidate.getUserId().getFirstname())
+                .candidateLastName(candidate.getUserId().getLastname())
+                .build();
+    }
 }
