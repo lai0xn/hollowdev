@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const Schema = mongoose.Schema;
 
+require("dotenv").config();
+
 const UserSchema = new Schema(
   {
     _id: {
@@ -57,6 +59,16 @@ UserSchema.methods.generateAuthToken = async function () {
     expiresIn: "24h",
   });
   return token;
+};
+
+UserSchema.statics.isUsernameTaken = async function (username) {
+  const user = await User.findOne({ username });
+  return user ? true : false;
+};
+
+UserSchema.statics.isEmailTaken = async function (email) {
+  const user = await User.findOne({ email });
+  return user ? true : false;
 };
 
 UserSchema.statics.findByIdentifiers = async (auth_identifier) => {
