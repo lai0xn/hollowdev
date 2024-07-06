@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voting System</title>
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <h1>Voting System</h1>
+    <button id="logout" style="display: none">Logout</button>
+    <div id="auth-section">
+      <h2>Register</h2>
+      <form id="register-form">
+        <label for="firstname">First Name</label>
+        <input type="text" id="firstname" placeholder="First Name" required />
+        <label for="lastname">Last Name</label>
+        <input type="text" id="lastname" placeholder="Last Name" required />
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Username" required />
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Email" required />
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Register</button>
+      </form>
+
+      <h2>Login</h2>
+      <form id="login-form">
+        <label for="login-username">Username</label>
+        <input
+          type="text"
+          id="login-username"
+          placeholder="Username"
+          required
+        />
+        <label for="login-password">Password</label>
+        <input
+          type="password"
+          id="login-password"
+          placeholder="Password"
+          required
+        />
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <div id="user-section" style="display: none">
+      <h2>User Actions</h2>
+      <button id="view-elections">View Elections</button>
+      <button id="view-candidates">View Candidates</button>
+      <button id="vote-candidate">Vote for Candidate</button>
+    </div>
+
+    <div id="admin-section" style="display: none">
+      <h2>Admin Actions</h2>
+      <button id="add-admin">Add Admin</button>
+      <button id="view-users">view users</button>
+      <button id="admin-view-election">View Elections</button>
+      <button id="admin-view-candidate">View Candidates</button>
+      <button id="add-election">Add Election</button>
+      <button id="add-candidate">Add Candidate</button>
+      <button id="delete-candidate">Delete Candidate</button>
+      <button id="delete-election">Delete Election</button>
+      <button id="election-rank" >Election Rank </button>
+    </div>
+
+    <div id="results"></div>
+  </body>
+</html>
