@@ -143,6 +143,14 @@
 			const ram = data.at(-1)?.ram ?? 1;
 			const storage = data.at(-1)?.storage ?? 1;
 
+			// data = [
+			// 	...new Array(30 - data.length).fill({
+			// 		cpu: 0,
+			// 		ram: 0,
+			// 		storage: 0,
+			// 	}),
+			// 	...data,
+			// ];
 
 			radialChartOptions.series = [cpu, ram, storage];
 			graphChartOptions.series = [

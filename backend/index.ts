@@ -2,10 +2,12 @@ import express from 'express';
 import cors from 'cors';
 import os from 'os';
 import si from 'systeminformation';
+import bodyParser from 'body-parser';
 
 const app = express();
 app.use(express.json());
-
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 
 // everything is in bytes
@@ -73,6 +75,7 @@ app.get('/processes', async (_, res) => {
 		const processes = await si.processes();
 		const mergedProcesses = mergeProcessesByName(processes.list);
 		const topProcesses = mergedProcesses
+			.filter((p) => p.name != 'ps')
 			.sort((a, b) => b.cpu - a.cpu)
 			.slice(0, 10);
 		res.json(topProcesses);
@@ -107,6 +110,13 @@ let shell: any;
 let outputBuffer = '';
 
 app.post('/console/execute', (req, res) => {
+	const command = req.body.command;
+	if (!command) {
+		return res
+			.status(400)
+			.json({ status: 'error', message: 'Command is required' });
+	}
+
 	if (!shell) {
 		shell = spawn('bash');
 		shell.stdout.on('data', (data: any) => {
@@ -117,13 +127,153 @@ app.post('/console/execute', (req, res) => {
 		});
 	}
 
-	shell.stdin.write(req.body.command + '\n');
+	try {
+		shell.stdin.write(command + '\n');
+	} catch {
+		shell = spawn('bash');
+		shell.stdout.on('data', (data: any) => {
+			outputBuffer += data.toString();
+		});
+		shell.stderr.on('data', (data: any) => {
+			outputBuffer += data.toString();
+		});
+	}
 	res.json({ status: 'command received' });
 });
 
 app.get('/console/output', (req, res) => {
 	res.json({ output: outputBuffer });
 	outputBuffer = '';
+});
+
+// file explorer
+import fs from 'fs/promises';
+import Path from 'path';
+import archiver from 'archiver';
+
+app.get('/files', async (req, res) => {
+	const path = req.query.path as string;
+	if (!path) {
+		res.status(400).json({ status: 'error', message: 'Path is required' });
+		return;
+	}
+
+	const repoExists = await fs
+		.access(path)
+		.then(() => true)
+		.catch(() => false);
+
+	if (!repoExists) {
+		res.status(404).json({
+			status: 'error',
+			message: 'Repository does not exist',
+		});
+		return;
+	}
+
+	const files = [];
+	try {
+		const fileNames = await fs.readdir(path);
+		for (const fileName of fileNames) {
+			const fullPath = Path.join(path, fileName);
+			const stat = await fs.stat(fullPath);
+			const isDirectory = stat.isDirectory();
+			const size = stat.size;
+			const extension = Path.extname(fileName);
+			const isHidden = fileName.startsWith('.');
+			const lastModified = stat.mtimeMs;
+
+			files.push({
+				name: fileName,
+				isDirectory,
+				fullPath,
+				size,
+				extension,
+				isHidden,
+				lastModified,
+			});
+		}
+	} catch (error) {
+		console.error('Error:', error);
+	}
+
+	res.json(files);
+});
+
+app.post('/files/rename', (req, res) => {
+	const { fullPath, newName } = req.body;
+
+	if (!fullPath || !newName) {
+		res.status(400).json({ status: 'error', message: 'Invalid request' });
+		return;
+	}
+
+	fs.rename(fullPath, Path.join(Path.dirname(fullPath), newName))
+		.then(() => {
+			res.json({ status: 'success' });
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+			res.status(500).json({
+				status: 'error',
+				message: 'Internal Server Error',
+			});
+		});
+});
+
+app.delete('/files', (req, res) => {
+	const fullPath = req.query.path as string;
+
+	if (!fullPath) {
+		res.status(400).json({ status: 'error', message: 'Invalid request' });
+		return;
+	}
+
+	fs.rm(fullPath, { recursive: true, force: true })
+		.then(() => {
+			res.json({ status: 'success' });
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+			res.status(500).json({
+				status: 'error',
+				message: 'Internal Server Error',
+			});
+		});
+});
+
+app.get('/files/download', async (req, res) => {
+	const fullPath = req.query.path as string;
+
+	if (!fullPath) {
+		res.status(400).json({ status: 'error', message: 'Invalid request' });
+		return;
+	}
+
+	const stat = await fs.stat(fullPath).catch(() => {
+		res.status(404).send('file not found');
+	});
+	if (!stat) return;
+
+	if (stat.isDirectory()) {
+		const archive = archiver('zip', { zlib: { level: 9 } }); // Sets the compression level. // file is not saved just in memory
+		const zipFileName = `${
+			Path.basename(fullPath) ?? 'archive'
+		}-${Date.now()}.zip`;
+
+		res.setHeader('Content-Type', 'application/zip');
+		res.setHeader(
+			'Content-Disposition',
+			`attachment; filename="${zipFileName}"`
+		);
+
+		archive.directory(fullPath, false);
+		archive.finalize();
+
+		archive.pipe(res);
+	} else {
+		res.download(fullPath);
+	}
 });
 
 app.listen(2024, () => {

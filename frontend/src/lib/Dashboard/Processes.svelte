@@ -11,20 +11,11 @@
 		Heading,
 		Hr,
 	} from 'flowbite-svelte';
-
-	const byteToString = (bytes: number) => {
-		const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-		let index = 0;
-		while (bytes >= 1024 && index < units.length - 1) {
-			bytes /= 1024;
-			index++;
-		}
-		return `${Math.round(bytes * 100) / 100} ${units[index]}`;
-	};
+	import { byteToString } from '$lib/Utils';
 </script>
 
 <Card class="p-4 w-full max-w-full">
-	<Heading class="text-lg">Processes:</Heading>
+	<Heading class="text-lg">Top Processes:</Heading>
 	<Hr hrClass="my-3" />
     <Table>
         <TableHead>

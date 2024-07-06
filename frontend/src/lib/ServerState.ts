@@ -37,7 +37,7 @@ const fetchState = async () => {
 								100
 						) / 100,
 				},
-			].slice(-15)
+			].slice(-30)
 		);
 		ServerState.set(newState);
 	} catch (err) {
@@ -45,8 +45,10 @@ const fetchState = async () => {
 	}
 };
 
-fetchState();
-setInterval(fetchState, 1000);
+if (typeof window !== 'undefined') {
+	fetchState();
+	setInterval(fetchState, 3000);
+}
 
 const fetchProcesses = async () => {
 	try {
@@ -59,5 +61,7 @@ const fetchProcesses = async () => {
 	}
 };
 
-fetchProcesses();
-setInterval(fetchProcesses, 5000);
+if (typeof window !== 'undefined') {
+	fetchProcesses();
+	setInterval(fetchProcesses, 8000);
+}

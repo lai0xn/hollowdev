@@ -12,15 +12,7 @@
 		Hr,
 	} from 'flowbite-svelte';
 
-	const byteToString = (bytes: number) => {
-		const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-		let index = 0;
-		while (bytes >= 1024 && index < units.length - 1) {
-			bytes /= 1024;
-			index++;
-		}
-		return `${Math.round(bytes * 100) / 100} ${units[index]}`;
-	};
+	import { byteToString } from '$lib/Utils';
 </script>
 
 <Card class="p-4 w-full max-w-full">
@@ -169,11 +161,8 @@
 		</TableHead>
 		<TableBody>
 			<TableBodyRow>
-				<TableBodyCell class="w-[25%] whitespace-normal">
-					{$ServerState.usage?.storage
-						? byteToString($ServerState.usage.storage)
-						: 'N/A'}
-				</TableBodyCell>
+				<TableBodyCell class="w-[25%] whitespace-normal"
+				></TableBodyCell>
 				<TableBodyCell class="w-[25%] whitespace-normal">
 					{$ServerState.diskReadWriteSpeed?.write
 						? `${byteToString($ServerState.diskReadWriteSpeed.write)}/s`

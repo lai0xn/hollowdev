@@ -28,7 +28,7 @@
 	<TabItem title="&nbsp; Files &nbsp;">
 		<Files />
 	</TabItem>
-	<TabItem title="&nbsp;Console&nbsp;" disabled>
+	<TabItem title="&nbsp;Console&nbsp;">
 		<Console />
 	</TabItem>
 	<TabItem title="&nbsp;Actions&nbsp;" disabled>
