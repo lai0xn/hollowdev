@@ -66,6 +66,17 @@ router.get('/:id/responses?type', authMiddleware, async (req, res) => {
 // Get a form
 router.get('/:id', authMiddleware, async (req, res) => {
   // get a form based on the id
+  try {
+    const form = await Form.findById(req.params.id);
+
+    if (!form) {
+      return res.status(404).json({ error: 'Form not found' });
+    }
+
+    res.send(form);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // Get a form but no need to be authenticated (a form where the user can respond without being authenticated)
