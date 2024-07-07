@@ -32,7 +32,7 @@ router.get('/', authMiddleware, async (req, res) => {
 });
 
 // Get a form responses
-router.get('/forms/:id/responses?type', authMiddleware, async (req, res) => {
+router.get('/:id/responses?type', authMiddleware, async (req, res) => {
   // there are two types of form response :
   //  1. response based on each question
   //  2. response based on each user
@@ -64,24 +64,24 @@ router.get('/forms/:id/responses?type', authMiddleware, async (req, res) => {
 });
 
 // Get a form
-router.get('/forms/:id', authMiddleware, async (req, res) => {
+router.get('/:id', authMiddleware, async (req, res) => {
   // get a form based on the id
 });
 
 // Get a form but no need to be authenticated (a form where the user can respond without being authenticated)
 // this is used when it is not needed to be authenticated to respond to a form
-router.get('/forms/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
   // get a form based on the id
 });
 // Update a form
-router.patch('/forms/:id', authMiddleware, async (req, res) => { });
+router.patch('/:id', authMiddleware, async (req, res) => { });
 
 // Delete a form
-router.delete('/forms/:id', authMiddleware, async (req, res) => { });
+router.delete('/:id', authMiddleware, async (req, res) => { });
 
 // Add a response to a form
 // this is used when it is not needed to be authenticated to respond to a form
-router.post('/forms/:id/add-response', async (req, res) => { });
+router.post('/:id/add-response', async (req, res) => { });
 
 
 module.exports = router;
