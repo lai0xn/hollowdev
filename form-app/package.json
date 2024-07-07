@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "test": "jest",
     "start": "nodemon app.js",
     "serve": "http-server ./static -p 8080",
     "watch": "browser-sync start --proxy 'localhost:8080' --files 'static/**/*.*'",
@@ -19,6 +20,8 @@
     "browser-sync": "^3.0.2",
     "concurrently": "^8.2.2",
     "http-server": "^14.1.1",
-    "nodemon": "^3.1.4"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
   }
 }
