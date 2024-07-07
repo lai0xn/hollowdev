@@ -8,6 +8,11 @@ const FormFieldSchema = new Schema({
     type: String,
     default: uuidv4,
   },
+  formId: {
+    type: String,
+    required: true,
+    ref: "Form",
+  },
   label: {
     type: String,
     required: true,
