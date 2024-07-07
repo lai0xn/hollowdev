@@ -86,7 +86,7 @@ router.get('/:id/responses?type', authMiddleware, async (req, res) => {
 });
 
 // Get a form
-router.get('/:id', authMiddleware, async (req, res) => {
+router.get('/secure/:id', authMiddleware, async (req, res) => {
   // get a form based on the id
   try {
     const form = await Form.findById(req.params.id);
