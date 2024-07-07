@@ -21,6 +21,12 @@ router.post('/add', authMiddleware, async (req, res) => {
 // Get all forms
 router.get('/forms', authMiddleware, async (req, res) => {
   // get all forms of a user so based on the owner id we can get the forms
+  try {
+    const forms = await Form.find({ owner: req.user._id });
+    res.send(forms);
+  } catch (e) {
+    res.status(500).send(e);
+  }
 });
 
 // Get a form responses
