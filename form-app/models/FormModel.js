@@ -22,6 +22,10 @@ const FormSchema = new Schema(
       ref: "User",
       required: true,
     },
+    canRespond: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
