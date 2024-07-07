@@ -46,6 +46,11 @@ router.get('/forms/:id', authMiddleware, async (req, res) => {
   // get a form based on the id
 });
 
+// Get a form but no need to be authenticated (a form where the user can respond without being authenticated)
+// this is used when it is not needed to be authenticated to respond to a form
+router.get('/forms/:id', async (req, res) => {
+  // get a form based on the id
+});
 // Update a form
 router.patch('/forms/:id', authMiddleware, async (req, res) => { });
 
