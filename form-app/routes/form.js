@@ -1,5 +1,7 @@
 const express = require('express');
 const Form = require('../models/FormModel');
+const FormField = require('../models/FormFieldModel');
+const Response = require('../models/ResponseModel');
 const authMiddleware = require('../middlewares/authMiddlware');
 const router = express.Router();
 
@@ -39,11 +41,25 @@ router.get('/forms/:id/responses?type', authMiddleware, async (req, res) => {
   //  if type is user then we will get the response based on each user
   //  if type is not provided then we will get the response based on each question
 
-  const type = req.params.type;
-  if (type === 'question' || !type) {
-    // get the response based on each question
-  } else if (type === 'user') {
-    // get the response based on each user
+  const { type } = req.query;
+  try {
+    const form = await Form.findById(req.params.id);
+    if (!form) {
+      return res.status(404).send();
+    }
+
+    let responses;
+    if (type === 'individual') {
+      // Fetch responses based on each individual user
+      responses = await getResponsesByUser(form._id);
+    } else {
+      // Default to fetching responses based on each question
+      responses = await getResponsesByQuestion(form._id);
+    }
+
+    res.send(responses);
+  } catch (e) {
+    res.status(500).send(e);
   }
 });
 
@@ -69,3 +85,45 @@ router.post('/forms/:id/add-response', async (req, res) => { });
 
 
 module.exports = router;
+
+
+
+// Functions to fetch responses
+async function getResponsesByUser(formId) {
+  // for each user we will get the response
+  // so we will return a list of each user and their responses
+
+  // get all responses for the form
+  const responses = await Response.find({ formId });
+
+  // group responses by user
+  const responsesByUser = {};
+  responses.forEach((response) => {
+    if (!responsesByUser[response._id]) {
+      responsesByUser[response._id] = [];
+    }
+    responsesByUser[response._id].push(response);
+  });
+
+  return responsesByUser;
+}
+
+// Function to fetch responses based on each question
+async function getResponsesByQuestion(formId) {
+  // for each question we will get the response
+  // so we will return a list of each question and their responses
+
+  // get all responses for the form
+  const responses = await Response.find({ formId });
+
+  // group responses by question
+  const responsesByQuestion = {};
+  responses.forEach((response) => {
+    if (!responsesByQuestion[response.fieldId]) {
+      responsesByQuestion[response.fieldId] = [];
+    }
+    responsesByQuestion[response.fieldId].push(response);
+  });
+
+  return responsesByQuestion;
+}
