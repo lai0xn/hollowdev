@@ -40,7 +40,7 @@ const UserSchema = new Schema(
   },
 );
 
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function(next) {
   const user = this;
   if (user.isModified("password")) {
     try {
@@ -54,7 +54,7 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
-UserSchema.methods.generateAuthToken = async function () {
+UserSchema.methods.generateAuthToken = async function() {
   const user = this;
   const token = jwt.sign({ _id: user._id }, process.env.JWT_KEY, {
     expiresIn: "24h",
@@ -62,12 +62,12 @@ UserSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-UserSchema.statics.isUsernameTaken = async function (username) {
+UserSchema.statics.isUsernameTaken = async function(username) {
   const user = await User.findOne({ username });
   return user ? true : false;
 };
 
-UserSchema.statics.isEmailTaken = async function (email) {
+UserSchema.statics.isEmailTaken = async function(email) {
   const user = await User.findOne({ email });
   return user ? true : false;
 };
