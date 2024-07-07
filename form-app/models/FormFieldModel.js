@@ -14,6 +14,12 @@ const FormFieldSchema = new Schema({
   type: {
     type: String,
     required: true,
+    // we need to specify the type of the field
+    // 1. text
+    // 2. checkbox
+    // 3. radio
+    // 4. select
+    enum: ["text", "checkbox", "radio", "select"]
   },
   isRequired: {
     type: Boolean,
