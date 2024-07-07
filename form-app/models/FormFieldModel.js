@@ -7,7 +7,7 @@ const FormFieldSchema = new Schema({
     type: String,
     default: uuidv4,
   },
-  name: {
+  label: {
     type: String,
     required: true,
   },
