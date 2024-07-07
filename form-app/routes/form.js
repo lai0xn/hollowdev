@@ -8,15 +8,37 @@ const router = express.Router();
 // Create a new form
 router.post('/', authMiddleware, async (req, res) => {
   try {
+    const { fields, ...formDetails } = req.body;
+
+    // Create a new form
     const form = new Form({
-      ...req.body,
-      owner: req.user._id
+      ...formDetails,
+      owner: req.user._id,
     });
-    console.log(form);
+
+    // Save the form
     await form.save();
-    res.status(201).send(form);
+
+    // Create form fields
+    if (fields && fields.length > 0) {
+      const formFields = fields.map((field) => {
+        return new FormField({
+          ...field,
+          formId: form._id,
+        });
+      });
+
+      // Save form fields
+      await FormField.insertMany(formFields);
+      form.fields = formFields.map((field) => field._id);
+
+      // Save the form with the updated fields
+      await form.save();
+
+      res.status(201).send(form);
+    }
   } catch (e) {
-    res.status(400).send(e);
+    res.status(400).json({ error: e.message });
   }
 });
 
