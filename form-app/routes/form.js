@@ -103,8 +103,19 @@ router.get('/secure/:id', authMiddleware, async (req, res) => {
 
 // Get a form but no need to be authenticated (a form where the user can respond without being authenticated)
 // this is used when it is not needed to be authenticated to respond to a form
-router.get('/:id', async (req, res) => {
+router.get('/public/:id', async (req, res) => {
   // get a form based on the id
+  // only the forms that are public can be accessed without authentication
+  try {
+    const form = await Form.findById(req.params.id);
+    if (!form || !form.canRespond) {
+      return res.status(404).json({ error: 'Form not found' });
+    }
+
+    res.send(form);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
 });
 // Update a form
 router.patch('/:id', authMiddleware, async (req, res) => { });
