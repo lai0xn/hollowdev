@@ -4,7 +4,7 @@ const authMiddleware = require('../middlewares/authMiddlware');
 const router = express.Router();
 
 // Create a new form
-router.post('/add', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
   try {
     const form = new Form({
       ...req.body,
