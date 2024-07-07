@@ -16,7 +16,10 @@ const FormSchema = new Schema(
       type: String,
       required: false,
     },
-    fields: [FormField.schema],
+    fields: [{
+      type: String,
+      ref: "FormField",
+    }],
     owner: {
       type: String,
       ref: "User",
