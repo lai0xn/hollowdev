@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid");
 const Schema = mongoose.Schema;
-
+const Form = require("./FormModel");
 require("dotenv").config();
 
 const UserSchema = new Schema(
@@ -33,6 +33,7 @@ const UserSchema = new Schema(
       trim: true,
       minlength: 8,
     },
+    Forms: [Form.schema],
   },
   {
     timestamps: true,
