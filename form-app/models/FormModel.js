@@ -17,6 +17,11 @@ const FormSchema = new Schema(
       required: false,
     },
     fields: [FormField.schema],
+    owner: {
+      type: String,
+      ref: "User",
+      required: true,
+    },
   },
   { timestamps: true },
 );
