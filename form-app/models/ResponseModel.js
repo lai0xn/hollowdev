@@ -9,6 +9,11 @@ const ResponseSchema = new Schema({
     default: uuidv4,
     ref: "User",
   },
+  formId: {
+    type: String,
+    required: true,
+    ref: "Form",
+  },
   fieldId: {
     type: String,
     required: true,
