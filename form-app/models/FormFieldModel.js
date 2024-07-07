@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const { v4: uuidv4 } = require("uuid");
+const Response = require("./ResponseModel");
 
 const FormFieldSchema = new Schema({
   _id: {
@@ -27,6 +28,9 @@ const FormFieldSchema = new Schema({
   },
   options: {
     type: [String],
+  },
+  response: {
+    type: [Response.schema],
   },
 });
 
