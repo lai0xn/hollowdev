@@ -118,7 +118,61 @@ router.get('/public/:id', async (req, res) => {
   }
 });
 // Update a form
-router.patch('/:id', authMiddleware, async (req, res) => { });
+router.patch('/:id', authMiddleware, async (req, res) => {
+  try {
+    const formId = req.params.id;
+    const updates = req.body;
+    const form = await Form.findOne({ _id: formId, owner: req.user._id });
+
+    if (!form) {
+      return res.status(404).json({ error: 'Form not found' });
+    }
+
+    // Update form details
+    Object.keys(updates).forEach(key => {
+      form[key] = updates[key];
+    });
+
+    // Save updated form
+    await form.save();
+
+    // If fields are updated, handle field updates separately
+    if (updates.fields) {
+      for (const fieldUpdate of updates.fields) {
+        if (fieldUpdate._id) {
+          // Update existing field
+          await FormField.updateOne(
+            { _id: fieldUpdate._id, formId: formId },
+            { $set: fieldUpdate }
+          );
+        } else {
+          // Add new field
+          const newField = new FormField({
+            ...fieldUpdate,
+            formId: formId,
+          });
+          await newField.save();
+          form.fields.push(newField._id);
+        }
+      }
+
+      // Remove fields that are not in the updates
+      const updatedFieldIds = updates.fields.map(field => field._id).filter(id => id);
+      await FormField.deleteMany({
+        formId: formId,
+        _id: { $nin: updatedFieldIds },
+      });
+
+      // Update form fields array
+      form.fields = updatedFieldIds;
+      await form.save();
+    }
+
+    res.status(200).send(form);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
 
 // Delete a form
 router.delete('/:id', authMiddleware, async (req, res) => { });
