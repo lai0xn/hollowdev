@@ -32,8 +32,7 @@ const UserSchema = new Schema(
       required: true,
       trim: true,
       minlength: 8,
-    },
-    Forms: [Form.schema],
+    }
   },
   {
     timestamps: true,
