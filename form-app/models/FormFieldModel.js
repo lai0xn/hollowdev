@@ -34,9 +34,6 @@ const FormFieldSchema = new Schema({
   options: {
     type: [String],
   },
-  response: {
-    type: [Response.schema],
-  },
 });
 
 const FormField = mongoose.model("FormField", FormFieldSchema);
