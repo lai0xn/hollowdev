@@ -165,7 +165,6 @@ router.patch("/:id", authMiddleware, async (req, res) => {
 });
 
 // Delete a form
-router.delete('/:id', authMiddleware, async (req, res) => { });
 router.delete("/:id", authMiddleware, async (req, res) => {
 
 // Add a response to a form
