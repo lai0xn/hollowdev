@@ -1,12 +1,12 @@
-const express = require('express');
-const Form = require('../models/FormModel');
-const FormField = require('../models/FormFieldModel');
-const Response = require('../models/ResponseModel');
-const authMiddleware = require('../middlewares/authMiddlware');
+const express = require("express");
+const Form = require("../models/FormModel");
+const FormField = require("../models/FormFieldModel");
+const Response = require("../models/ResponseModel");
+const authMiddleware = require("../middlewares/authMiddlware");
 const router = express.Router();
 
 // Create a new form
-router.post('/', authMiddleware, async (req, res) => {
+router.post("/", authMiddleware, async (req, res) => {
   try {
     const { fields, ...formDetails } = req.body;
 
@@ -43,7 +43,7 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 // Get all forms
-router.get('/', authMiddleware, async (req, res) => {
+router.get("/", authMiddleware, async (req, res) => {
   // get all forms of a user so based on the owner id we can get the forms
   try {
     const forms = await Form.find({ owner: req.user._id });
@@ -86,7 +86,7 @@ router.get('/:id/responses?type', authMiddleware, async (req, res) => {
 });
 
 // Get a form
-router.get('/secure/:id', authMiddleware, async (req, res) => {
+router.get("/secure/:id", authMiddleware, async (req, res) => {
   // get a form based on the id
   try {
     const form = await Form.findById(req.params.id);
@@ -103,13 +103,13 @@ router.get('/secure/:id', authMiddleware, async (req, res) => {
 
 // Get a form but no need to be authenticated (a form where the user can respond without being authenticated)
 // this is used when it is not needed to be authenticated to respond to a form
-router.get('/public/:id', async (req, res) => {
+router.get("/public/:id", async (req, res) => {
   // get a form based on the id
   // only the forms that are public can be accessed without authentication
   try {
     const form = await Form.findById(req.params.id);
     if (!form || !form.canRespond) {
-      return res.status(404).json({ error: 'Form not found' });
+      return res.status(404).json({ error: "Form not found" });
     }
 
     res.send(form);
@@ -118,18 +118,18 @@ router.get('/public/:id', async (req, res) => {
   }
 });
 // Update a form
-router.patch('/:id', authMiddleware, async (req, res) => {
+router.patch("/:id", authMiddleware, async (req, res) => {
   try {
     const formId = req.params.id;
     const updates = req.body;
     const form = await Form.findOne({ _id: formId, owner: req.user._id });
 
     if (!form) {
-      return res.status(404).json({ error: 'Form not found' });
+      return res.status(404).json({ error: "Form not found" });
     }
 
     // Update form details
-    Object.keys(updates).forEach(key => {
+    Object.keys(updates).forEach((key) => {
       form[key] = updates[key];
     });
 
@@ -223,5 +223,4 @@ async function getResponsesByQuestion(formId) {
     responsesByQuestion[response.fieldId].push(response);
   });
 
-  return responsesByQuestion;
-}
+module.exports = router;
