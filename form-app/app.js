@@ -23,6 +23,7 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
   });
 
+app.use(express.static("static"));
 // Use auth routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/forms", formRoutes);
