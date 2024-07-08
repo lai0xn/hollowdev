@@ -108,6 +108,8 @@ router.get("/public/:id", async (req, res) => {
     if (!form || !form.canRespond) {
       return res.status(404).json({ error: "Form not found" });
     }
+    const formFields = await FormField.find({ formId: form._id });
+    form.fields = formFields;
     res.send(form);
   } catch (e) {
     res.status(500).json({ error: e.message });
