@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const authRoutes = require("./routes/auth");
 const formRoutes = require("./routes/form");
+const formfieldRoutes = require("./routes/formfield");
+const socketIo = require("socket.io");
+const socketHandler = require("./websockets/socketHandler");
 const cors = require("cors");
 const app = express();
 const port = 10000;
@@ -27,6 +30,7 @@ app.use(express.static("static"));
 // Use auth routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/forms", formRoutes);
+app.use("/api/v1/formfields", formfieldRoutes);
 // basic route to test the server
 app.get("/", (req, res) => {
   res.send("Hello World!");
