@@ -171,43 +171,8 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 // Add a response to a form
 // this is used when it is not needed to be authenticated to respond to a form
 
-
-
-// Functions to fetch responses
-async function getResponsesByUser(formId) {
-  // for each user we will get the response
-  // so we will return a list of each user and their responses
-
-  // get all responses for the form
-  const responses = await Response.find({ formId });
-
-  // group responses by user
-  const responsesByUser = {};
-  responses.forEach((response) => {
-    if (!responsesByUser[response._id]) {
-      responsesByUser[response._id] = [];
     }
-    responsesByUser[response._id].push(response);
-  });
 
-  return responsesByUser;
-}
-
-// Function to fetch responses based on each question
-async function getResponsesByQuestion(formId) {
-  // for each question we will get the response
-  // so we will return a list of each question and their responses
-
-  // get all responses for the form
-  const responses = await Response.find({ formId });
-
-  // group responses by question
-  const responsesByQuestion = {};
-  responses.forEach((response) => {
-    if (!responsesByQuestion[response.fieldId]) {
-      responsesByQuestion[response.fieldId] = [];
     }
-    responsesByQuestion[response.fieldId].push(response);
-  });
 
 module.exports = router;
