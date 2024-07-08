@@ -81,7 +81,8 @@ router.get("/secure/:id", authMiddleware, async (req, res) => {
     const form = await Form.findById(req.params.id);
 
     if (!form) {
-      return res.status(404).json({ error: 'Form not found' });
+      return res.status(404).json({ error: "Form not found" });
+    }
     }
 
     res.send(form);
@@ -165,6 +166,7 @@ router.patch("/:id", authMiddleware, async (req, res) => {
 
 // Delete a form
 router.delete('/:id', authMiddleware, async (req, res) => { });
+router.delete("/:id", authMiddleware, async (req, res) => {
 
 // Add a response to a form
 // this is used when it is not needed to be authenticated to respond to a form
