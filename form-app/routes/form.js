@@ -170,9 +170,29 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 
 // Add a response to a form
 // this is used when it is not needed to be authenticated to respond to a form
+router.post("/:id/add-response", async (req, res) => {
+  try {
+    const form = await Form.findById(req.params.id);
 
+    if (!form) {
+      return res.status(404).json({ error: "Form not found" });
     }
 
+    if (!form.canRespond) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized; form is not open for responses" });
     }
+    const response = new Response({
+      formId: form._id,
+      ...req.body,
+    });
+
+    await response.save();
+    res.status(201).send(response);
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
 
 module.exports = router;
