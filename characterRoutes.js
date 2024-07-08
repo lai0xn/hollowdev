@@ -1,5 +1,5 @@
 const express = require('express');
-const {addCharacter,getAllCharacters, getCharacterByName, updateCharacterByName, deleteCharacterByName } = require('../controllers/characterController.js');
+const {addCharacter,getAllCharacters, getCharacterByName, updateCharacterByName, deleteCharacterByName } = require('../characterController.js');
 const { characterValidationRules, validate } = require('../validation');
 
 const router = express.Router();
