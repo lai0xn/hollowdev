@@ -51,3 +51,51 @@ router.post('/:formId', authMiddleware, async (req, res) => {
     res.status(400).send({ error: e.message });
   }
 });
+
+router.patch('/:formId/:fieldId', authMiddleware, async (req, res) => {
+  try {
+    logger.info('Updating form field');
+    logger.info('Checking for missing fields');
+    if (!req.params.formId || !req.params.fieldId) {
+      logger.error('Form ID and Field ID are required');
+      return res.status(400).send({ error: 'Form ID and Field ID are required' });
+    }
+    logger.info('Form ID and Field ID provided');
+
+    logger.info('Finding form');
+    const form = await Form.findById(req.params.formId);
+    if (!form) {
+      logger.error('Form not found');
+      return res.status(404).send({ error: 'Form not found' });
+    }
+    logger.info('Form found');
+
+    logger.info('Checking if user is the owner of the form');
+    if (form.owner.toString() !== req.user._id.toString()) {
+      logger.error('Unauthorized');
+      return res.status(401).send({ error: 'Unauthorized' });
+    }
+    logger.info('User is the owner of the form');
+
+    logger.info('Finding form field');
+    const formField = await FormField.findById(req.params.fieldId);
+    if (!formField) {
+      logger.error('Form field not found');
+      return res.status(404).send({ error: 'Form field not found' });
+    }
+    logger.info('Form field found');
+
+    logger.info('Updating form field');
+    Object.keys(req.body).forEach((key) => {
+      formField[key] = req.body[key];
+    });
+
+    logger.info('Saving form field');
+    await formField.save();
+
+    logger.info('Form field updated successfully');
+    res.send(formField);
+  } catch (e) {
+    res.status(400).send({ error: e.message });
+  }
+});
