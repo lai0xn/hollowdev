@@ -54,31 +54,20 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 // Get a form responses
-router.get('/:id/responses?type', authMiddleware, async (req, res) => {
-  // there are two types of form response :
-  //  1. response based on each question
-  //  2. response based on each user
-  //  so based on the type we can get the response
-  //  if type is question then we will get the response based on each question
-  //  if type is user then we will get the response based on each user
-  //  if type is not provided then we will get the response based on each question
-
-  const { type } = req.query;
+router.get("/:id/responses", authMiddleware, async (req, res) => {
   try {
     const form = await Form.findById(req.params.id);
     if (!form) {
       return res.status(404).send();
     }
 
-    let responses;
-    if (type === 'individual') {
-      // Fetch responses based on each individual user
-      responses = await getResponsesByUser(form._id);
-    } else {
-      // Default to fetching responses based on each question
-      responses = await getResponsesByQuestion(form._id);
+    if (form.owner.toString() !== req.user._id.toString()) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized; not the owner of the form" });
     }
-
+    // get all responses for the form
+    const responses = await Response.find({ formId: form._id });
     res.send(responses);
   } catch (e) {
     res.status(500).send(e);
