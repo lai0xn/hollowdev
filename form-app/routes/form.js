@@ -163,7 +163,6 @@ router.patch("/:id", authMiddleware, async (req, res) => {
     res.status(400).json({ error: e.message });
   }
 });
-
 // Delete a form
 router.delete("/:id", authMiddleware, async (req, res) => {
   try {
