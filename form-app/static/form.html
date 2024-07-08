@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Form</title>
+  </head>
+  <body>
+    <div id="formDetails"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      socket.on("connect", () => {
+        console.log("Connected to server");
+      });
+
+      function addField(formId) {
+        const label = prompt("Enter label for the new field:");
+        if (!label) return;
+
+        const newField = {
+          label,
+          type: "text",
+          isRequired: false,
+          options: [],
+        };
+
+        socket.emit("addField", { formId, newField });
+      }
+
+      function editField(formId, fieldId) {
+        const label = prompt("Enter new label for the field:");
+        if (!label) return;
+
+        const updates = { label };
+
+        socket.emit("updateField", { formId, fieldId, updates });
+      }
+
+      function deleteField(formId, fieldId) {
+        if (confirm("Are you sure you want to delete this field?")) {
+          socket.emit("deleteField", { formId, fieldId });
+        }
+      }
+
+      function renderFormDetails(form) {
+        const formDetails = document.getElementById("formDetails");
+        formDetails.innerHTML = `
+        <h2>${form.name}</h2>
+        <p>Description: ${form.description}</p>
+        <p>Can Respond: ${form.canRespond ? "Yes" : "No"}</p>
+        <h3>Fields:</h3>
+        <ul>
+          ${form.fields
+            .map(
+              (field) => `
+                <li>
+                  <strong>Label:</strong> ${field.label}<br>
+                  <strong>Type:</strong> ${field.type}<br>
+                  <strong>Required:</strong> ${field.isRequired ? "Yes" : "No"}<br>
+                  <strong>Options:</strong> ${field.options.join(", ")}<br>
+                  <button onclick="editField('${form._id}', '${field._id}')">Edit</button>
+                  <button onclick="deleteField('${form._id}', '${field._id}')">Delete</button>
+                </li>
+              `,
+            )
+            .join("")}
+        </ul>
+        <button onclick="addField('${form._id}')">Add Field</button>
+      `;
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const formId = urlParams.get("id");
+
+        // Fetch form details
+        fetch(`/api/forms/secure/${formId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((form) => {
+            renderFormDetails(form);
+
+            // Example: Listening for 'fieldAdded' event
+            socket.on("fieldAdded", ({ formId: addedFormId, field }) => {
+              if (addedFormId === form._id) {
+                form.fields.push(field);
+                renderFormDetails(form);
+              }
+            });
+
+            socket.on(
+              "fieldUpdated",
+              ({ formId: updatedFormId, fieldId, updates }) => {
+                if (updatedFormId === form._id) {
+                  const updatedField = form.fields.find(
+                    (field) => field._id === fieldId,
+                  );
+                  if (updatedField) {
+                    Object.assign(updatedField, updates);
+                    ties;
+                    renderFormDetails(form);
+                  }
+                }
+              },
+            );
+
+            socket.on("fieldDeleted", ({ formId: deletedFormId, fieldId }) => {
+              if (deletedFormId === form._id) {
+                form.fields = form.fields.filter(
+                  (field) => field._id !== fieldId,
+                );
+                renderFormDetails(form);
+                details;
+              }
+            });
+          })
+          .catch((error) => console.error("Error fetching form:", error));
+      });
+    </script>
+  </body>
+</html>
