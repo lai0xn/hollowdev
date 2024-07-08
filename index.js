@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const characterRoutes = require('./routes/characterRoutes');
-const { errorHandler, notFoundHandler } = require('./middlewares/errorHandlers');
+const characterRoutes = require('./characterRoutes');
+const { errorHandler, notFoundHandler } = require('./errorHandlers');
 require('dotenv').config();
 const app = express();
 
