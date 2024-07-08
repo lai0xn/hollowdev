@@ -83,8 +83,15 @@ router.get("/secure/:id", authMiddleware, async (req, res) => {
     if (!form) {
       return res.status(404).json({ error: "Form not found" });
     }
+
+    if (form.owner.toString() !== req.user._id.toString()) {
+      return res
+        .status(401)
+        .json({ error: "Unauthorized; not the owner of the form" });
     }
 
+    const formFields = await FormField.find({ formId: form._id });
+    form.fields = formFields;
     res.send(form);
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -101,7 +108,6 @@ router.get("/public/:id", async (req, res) => {
     if (!form || !form.canRespond) {
       return res.status(404).json({ error: "Form not found" });
     }
-
     res.send(form);
   } catch (e) {
     res.status(500).json({ error: e.message });
