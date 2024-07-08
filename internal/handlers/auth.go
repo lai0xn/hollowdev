@@ -89,7 +89,7 @@ func LoginPost(c *fiber.Ctx) error {
 	cookie := &fiber.Cookie{
 		Name:     "token",
 		Value:    token_string,
-		Expires:  time.Now().Add(time.Minute * 2),
+		Expires:  time.Now().Add(time.Hour * 72),
 		Secure:   true,
 		HTTPOnly: true,
 	}
