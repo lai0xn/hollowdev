@@ -170,10 +170,6 @@ router.delete("/:id", authMiddleware, async (req, res) => {
 
 // Add a response to a form
 // this is used when it is not needed to be authenticated to respond to a form
-router.post('/:id/add-response', async (req, res) => { });
-
-
-module.exports = router;
 
 
 
