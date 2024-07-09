@@ -46,7 +46,7 @@ function registerUser(event) {
     password: form.password.value,
   };
 
-  fetch("/api/auth/register", {
+  fetch("/api/v1/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -70,7 +70,7 @@ function loginUser(event) {
     password: form.password.value,
   };
 
-  fetch("/api/auth/login", {
+  fetch("/api/v1/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -113,7 +113,7 @@ function createForm(event) {
     fields,
   };
 
-  fetch("/api/forms", {
+  fetch("/api/v1/forms", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -160,7 +160,7 @@ function addField() {
 function getForms() {
   const token = localStorage.getItem("token");
 
-  fetch("/api/forms", {
+  fetch("/api/v1/forms", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -204,7 +204,7 @@ async function changeCanRespond(formId, canRespond) {
   const token = localStorage.getItem("token");
 
   try {
-    const response = await fetch(`/api/forms/${formId}`, {
+    const response = await fetch(`/api/v1/forms/${formId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -226,7 +226,7 @@ async function changeCanRespond(formId, canRespond) {
 function deleteForm(formId) {
   const token = localStorage.getItem("token");
 
-  fetch(`/api/forms/${formId}`, {
+  fetch(`/api/v1/forms/${formId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

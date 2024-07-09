@@ -77,7 +77,7 @@
         const formId = urlParams.get("id");
 
         // Fetch form details
-        fetch(`/api/forms/secure/${formId}`, {
+        fetch(`/api/v1/forms/secure/${formId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
