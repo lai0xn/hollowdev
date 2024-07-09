@@ -67,3 +67,6 @@
 - Git Repository Link :https://github.com/lai0xn/hollowdev/tree/hollow-chat
 - Previw Video Link :
 - Hosted Project Link :
+
+## Note
+- All Videos And urls will be put in the backrooms channel
