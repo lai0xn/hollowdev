@@ -14,7 +14,8 @@
 - Requirement 3 (100%)
 - Requirement 4 (100%)
 - Requirement 5 (100%)
+- Requirement 6 (100%)
 
-- Did you complete any bonus points? ****
+- Did you complete any bonus points? \*\*\*\*
 
 - What did you implement extra?
